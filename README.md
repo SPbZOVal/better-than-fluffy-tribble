@@ -86,7 +86,7 @@ A pipeline cmd1 | cmd2 | ... | cmdN must:
 
 ### Documentation
 
-Documentation can be found in [documentation directory](https://github.com/SPbZOVal/better-than-fluffy-tribble/tree/main/docs).
+Documentation in russian language can be found in [documentation directory](https://github.com/SPbZOVal/better-than-fluffy-tribble/tree/main/docs).
 
 ### Team
 
