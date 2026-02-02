@@ -28,7 +28,7 @@ jobs:
       - name: Print clang-format version
         run: clang-format-15 --version
       - name: Run clang-format
-        run: CMD_FIND_CPP | xargs clang-format-15 --dry-run -Werror -style=file
+        run: ${{inputs.CMD_FIND_ALL}} | xargs clang-format-15 --dry-run -Werror -style=file
   clang-tidy:
     runs-on: ubuntu-latest
     timeout-minutes: 2
@@ -42,4 +42,4 @@ jobs:
       - name: Print clang-tidy version
         run: clang-tidy-15 --version
       - name: Run clang-tidy
-        run: CMD_FIND_C | xargs clang-tidy-15 
+        run: ${{inputs.CMD_FIND_C}} | xargs clang-tidy-15 
