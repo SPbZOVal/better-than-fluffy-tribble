@@ -1,5 +1,7 @@
 # HSE AMI SRD 2026 project
 
+[![CI](https://github.com/SPbZOVal/better-than-fluffy-tribble/actions/workflows/linters.yml/badge.svg?branch=main)](https://github.com/SPbZOVal/better-than-fluffy-tribble/actions/workflows/linters.yml)
+
 Minimal command-line interpreter (mini shell) written in C++.
 
 ## Examples
