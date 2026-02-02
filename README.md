@@ -1,4 +1,4 @@
-# HSE AMI SRD 2026 project
+# HSE AMI SD 2026 project
 
 [![CI](https://github.com/SPbZOVal/better-than-fluffy-tribble/actions/workflows/linters.yml/badge.svg?branch=main)](https://github.com/SPbZOVal/better-than-fluffy-tribble/actions/workflows/linters.yml)
 
