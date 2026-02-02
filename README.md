@@ -88,6 +88,21 @@ A pipeline cmd1 | cmd2 | ... | cmdN must:
 
 Documentation in russian language can be found in [documentation directory](https://github.com/SPbZOVal/better-than-fluffy-tribble/tree/main/docs).
 
+### Build
+
+After clone in project directory:
+```sh
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build .
+```
+
+Launch:
+```sh
+./btft
+```
+
 ### Team
 
 - Andrey Gladkikh
