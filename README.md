@@ -1,6 +1,6 @@
 # HSE AMI SD 2026 project
 
-[![CI](https://github.com/SPbZOVal/better-than-fluffy-tribble/actions/workflows/linters.yml/badge.svg?branch=main)](https://github.com/SPbZOVal/better-than-fluffy-tribble/actions/workflows/linters.yml)
+[![CI](https://github.com/SPbZOVal/better-than-fluffy-tribble/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/SPbZOVal/better-than-fluffy-tribble/actions/workflows/build.yml)
 
 Minimal command-line interpreter (mini shell) written in C++.
 
