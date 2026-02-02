@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_call:
+    inputs:
+        CMD_FIND_ALL:
+            type: string
+            default: $(find src tests -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c')
+        CMD_FIND_C:
+            type: string
+            default: $(find src tests -name '*.cpp' -o -name '*.c')
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Download solution
+        uses: actions/checkout@v3
+      - name: Print clang-format version
+        run: clang-format-15 --version
+      - name: Run clang-format
+        run: CMD_FIND_CPP | xargs clang-format-15 --dry-run -Werror -style=file
+  clang-tidy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Download solution
+        uses: actions/checkout@v3
+      - name: Print clang-tidy version
+        run: clang-tidy-15 --version
+      - name: Run clang-tidy
+        run: CMD_FIND_C | xargs clang-tidy-15 
