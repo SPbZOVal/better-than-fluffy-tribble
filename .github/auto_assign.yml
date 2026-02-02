@@ -1,0 +1,10 @@
+addReviewers: true
+addAssignees: false
+
+reviewers:
+  - pppppptttttt
+  - Qwertst
+  - domosedy
+
+numberOfReviewers: 0
+addAssignees: author
