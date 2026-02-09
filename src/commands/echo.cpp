@@ -1,7 +1,9 @@
 #include "commands/echo.h"
 #include <iostream>
 
-ExecutionResult EchoCommand::Execute(
+namespace NInterpretator::NExecutor::NCommands {
+
+NInterpetator::ExecutionResult EchoCommand::Execute(
     const std::vector<std::string> &args,
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel
@@ -10,5 +12,7 @@ ExecutionResult EchoCommand::Execute(
         outputChannel->write(inputChannel->read());
     }
 
-    return ExecutionResult{.returnCode = 0};
+    return NInterpetator::ExecutionResult{.returnCode = 0};
 }
+
+}  // namespace NInterpretator::NExecutor::NCommands

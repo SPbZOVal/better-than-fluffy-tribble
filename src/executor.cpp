@@ -4,13 +4,15 @@
 #include "channel.h"
 #include "commands/registry.h"
 
-void SingleNodeExecution(
+namespace NInterpretator::NExecutor {
+
+static void SingleNodeExecution(
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel,
-    const CommandNode &node
+    const NInterpetator::CommandNode &node
 ) {
     auto command = CommandsRegistry::GetInstance().getCommand(node.name);
-    ExecutionResult result =
+    NInterpetator::ExecutionResult result =
         command->Execute(node.args, inputChannel, outputChannel);
     outputChannel->closeChannel();
 
@@ -19,7 +21,9 @@ void SingleNodeExecution(
     }
 }
 
-ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes) {
+NInterpetator::ExecutionResult ExecutePipeline(
+    const std::vector<NInterpetator::CommandNode> &nodes
+) {
     std::vector<std::thread> pipeline;
     std::shared_ptr<Channel> commonChannel;
 
@@ -41,19 +45,18 @@ ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes) {
                 dynamic_pointer_cast<Channel, IOutputChannel>(outputChannel);
         }
 
-        pipeline.push_back(
-            std::thread{
-                SingleNodeExecution, inputChannel, outputChannel,
-                std::cref(nodes[i])
-            }
-        );
+        pipeline.push_back(std::thread{
+            SingleNodeExecution, inputChannel, outputChannel,
+            std::cref(nodes[i])});
     }
 
     for (auto &thread : pipeline) {
         thread.join();
     }
 
-    ExecutionResult result;
+    NInterpetator::ExecutionResult result;
     result.returnCode = 0;
     return result;
 }
+
+}  // namespace NInterpretator::NExecutor

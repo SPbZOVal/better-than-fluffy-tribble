@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include "commands/icommand.h"
 
+namespace NInterpretator::NExecutor {
+
 class CommandsRegistry {
 public:
     static CommandsRegistry &GetInstance() {
@@ -10,12 +12,14 @@ public:
         return instance;
     }
 
-    void
-    registerCommand(const std::string &name, CommandCreator commandCreator) {
+    void registerCommand(
+        const std::string &name,
+        NCommands::CommandCreator commandCreator
+    ) {
         registry.emplace(name, commandCreator());
     }
 
-    std::shared_ptr<ICommand> getCommand(const std::string &name) {
+    std::shared_ptr<NCommands::ICommand> getCommand(const std::string &name) {
         auto commandIterator = registry.find(name);
         if (commandIterator == registry.end()) {
             return nullptr;
@@ -31,5 +35,8 @@ private:
     CommandsRegistry &operator=(const CommandsRegistry &other) = delete;
     CommandsRegistry &operator=(CommandsRegistry &&other) = delete;
 
-    std::unordered_map<std::string, std::shared_ptr<ICommand>> registry;
+    std::unordered_map<std::string, std::shared_ptr<NCommands::ICommand>>
+        registry;
 };
+
+}  // namespace NInterpretator::NExecutor

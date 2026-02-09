@@ -2,4 +2,10 @@
 
 #include "common.h"
 
-ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes);
+namespace NInterpretator::NExecutor {
+
+NInterpetator::ExecutionResult ExecutePipeline(
+    const std::vector<NInterpetator::CommandNode> &nodes
+);
+
+}  // namespace NInterpretator::NExecutor

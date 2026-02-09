@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 
+namespace NInterpretator::NExecutor {
 class IChannel {
 public:
     virtual void closeChannel() = 0;
@@ -51,3 +52,4 @@ private:
     std::string readBuffer;
     bool closed = false;
 };
+}  // namespace NInterpretator::NExecutor

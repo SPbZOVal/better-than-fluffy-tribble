@@ -7,10 +7,12 @@
 #include "channel.h"
 #include "common.h"
 
+namespace NInterpretator::NExecutor::NCommands {
+
 class ICommand {
 public:
     virtual ~ICommand() = default;
-    virtual ExecutionResult Execute(
+    virtual NInterpetator::ExecutionResult Execute(
         const std::vector<std::string> &args,
         std::shared_ptr<IInputChannel> inputChannel,
         std::shared_ptr<IOutputChannel> outputChannel
@@ -18,3 +20,4 @@ public:
 };
 
 using CommandCreator = std::function<std::shared_ptr<ICommand>()>;
+}  // namespace NInterpretator::NExecutor::NCommands

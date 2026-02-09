@@ -2,6 +2,8 @@
 #include <exception>
 #include <iostream>
 
+namespace NInterpretator::NExecutor {
+
 void Channel::write(const std::string &buffer) {
     std::unique_lock<std::mutex> mutexWrite(mutex);
     if (closed) {
@@ -56,3 +58,5 @@ void OutputStdChannel::write(const std::string &buffer) {
 
 void OutputStdChannel::closeChannel() {
 }
+
+}  // namespace NInterpretator::NExecutor
