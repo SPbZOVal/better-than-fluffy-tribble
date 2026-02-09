@@ -12,8 +12,8 @@ public:
     virtual ~ICommand() = default;
     virtual ExecutionResult Execute(
         const std::vector<std::string> &args,
-        IChannel &inputChannel,
-        IChannel &outputChannel
+        std::shared_ptr<IInputChannel> inputChannel,
+        std::shared_ptr<IOutputChannel> outputChannel
     ) = 0;
 };
 

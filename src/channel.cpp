@@ -2,28 +2,25 @@
 #include <exception>
 #include <iostream>
 
-Channel::Channel() : stream(std::stringstream::in | std::stringstream::out) {
-}
-
 void Channel::write(const std::string &buffer) {
     std::unique_lock<std::mutex> mutexWrite(mutex);
     if (closed) {
         throw std::runtime_error("Channel is closed, you can't write into it");
     }
-    stream << buffer;
+    readBuffer += buffer;
     mutexWrite.unlock();
 
-    condVar.notify_one();
+    condVar.notify_all();
 }
 
 std::string Channel::read() {
     std::unique_lock<std::mutex> mutexRead(mutex);
     condVar.wait(mutexRead, [this]() {
-        return closed || stream.str().size() != 0;
+        return closed || readBuffer.size() != 0;
     });
 
-    std::string result = std::move(stream.str());
-    stream.clear();
+    std::string result = std::move(readBuffer);
+    readBuffer.clear();
     return result;
 }
 
@@ -35,39 +32,27 @@ void Channel::closeChannel() {
     condVar.notify_all();
 }
 
-bool Channel::isClosed() {
+bool Channel::isClosed() const noexcept {
     return closed;
 }
 
-std::string InputChannel::read() {
+std::string InputStdChannel::read() {
     std::string result;
     std::getline(std::cin, result);
+    result += "\n";
     return result;
 }
 
-void InputChannel::write(const std::string &bufffer) {
-    throw std::runtime_error("Can't write to std::cin");
-}
-
-bool InputChannel::isClosed() {
+bool InputStdChannel::isClosed() const noexcept {
     return std::cin.eof();
 }
 
-void InputChannel::closeChannel() {
-    throw std::runtime_error("Can't close std::cin");
+void InputStdChannel::closeChannel() {
 }
 
-std::string OutputChannel::read() {
-    throw std::runtime_error("Can't read from std::cin");
-}
-
-void OutputChannel::write(const std::string &buffer) {
+void OutputStdChannel::write(const std::string &buffer) {
     std::cout << buffer;
 }
 
-void OutputChannel::closeChannel() {
-}
-
-bool OutputChannel::isClosed() {
-    return false;
+void OutputStdChannel::closeChannel() {
 }

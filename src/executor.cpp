@@ -1,17 +1,18 @@
 #include "executor.h"
+#include <iostream>
 #include <thread>
 #include "channel.h"
 #include "commands/registry.h"
 
 void SingleNodeExecution(
-    IChannel &inputChannel,
-    IChannel &outputChannel,
+    std::shared_ptr<IInputChannel> inputChannel,
+    std::shared_ptr<IOutputChannel> outputChannel,
     const CommandNode &node
 ) {
     auto command = CommandsRegistry::GetInstance().getCommand(node.name);
     ExecutionResult result =
         command->Execute(node.args, inputChannel, outputChannel);
-    outputChannel.closeChannel();
+    outputChannel->closeChannel();
 
     if (result.returnCode != 0) {
         // TODO: send error status code to the channel
@@ -20,20 +21,31 @@ void SingleNodeExecution(
 
 ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes) {
     std::vector<std::thread> pipeline;
-    std::shared_ptr<IChannel> inputChannel;
-    std::shared_ptr<IChannel> outputChannel = std::make_shared<InputChannel>();
+    std::shared_ptr<Channel> commonChannel;
 
     for (std::size_t i = 0; i < nodes.size(); ++i) {
-        inputChannel = std::move(outputChannel);
-        if (i == nodes.size() - 1) {
-            outputChannel = std::make_shared<OutputChannel>();
+        std::shared_ptr<IInputChannel> inputChannel;
+        if (i == 0) {
+            inputChannel = std::make_shared<InputStdChannel>();
         } else {
-            outputChannel = std::make_shared<Channel>();
+            inputChannel =
+                dynamic_pointer_cast<IInputChannel, Channel>(commonChannel);
         }
 
-        pipeline.emplace_back(
-            SingleNodeExecution, std::ref(*inputChannel),
-            std::ref(*outputChannel), std::cref(nodes[i])
+        std::shared_ptr<IOutputChannel> outputChannel;
+        if (i + 1 == nodes.size()) {
+            outputChannel = std::make_shared<OutputStdChannel>();
+        } else {
+            outputChannel = std::make_shared<Channel>();
+            commonChannel =
+                dynamic_pointer_cast<Channel, IOutputChannel>(outputChannel);
+        }
+
+        pipeline.push_back(
+            std::thread{
+                SingleNodeExecution, inputChannel, outputChannel,
+                std::cref(nodes[i])
+            }
         );
     }
 
