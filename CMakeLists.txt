@@ -8,4 +8,5 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 
+include_directories(include)
 add_executable(${PROJECT_NAME} src/main.cpp)
