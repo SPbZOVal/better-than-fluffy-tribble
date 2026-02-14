@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(basher)
+project(lol_better_than_dota)
 
 set(CMAKE_CXX_STANDARD 20)
 
