@@ -1,0 +1,102 @@
+#include "antlr_support.h"
+#include <string_view>
+#include "ShellLexer.h"
+
+namespace btft {
+
+void CountingErrorListener::syntaxError(
+    antlr4::Recognizer *,
+    antlr4::Token *,
+    size_t,
+    size_t,
+    const std::string &,
+    std::exception_ptr
+) {
+    ++errors;
+}
+
+int CountingErrorListener::get_errors() const {
+    return errors;
+}
+
+namespace {
+
+std::string unescape_single_quoted(std::string_view s) {
+    std::string out;
+    out.reserve(s.size());
+    for (size_t i = 0; i < s.size(); ++i) {
+        if (s.at(i) == '\\' && i + 1 < s.size()) {
+            if (const char next = s.at(i + 1); next == '\'' || next == '\\') {
+                out.push_back(next);
+                ++i;
+                continue;
+            }
+        }
+        out.push_back(s.at(i));
+    }
+    return out;
+}
+
+std::string unescape_double_quoted(std::string_view s) {
+    std::string out;
+    out.reserve(s.size());
+    for (size_t i = 0; i < s.size(); ++i) {
+        if (s.at(i) == '\\' && i + 1 < s.size()) {
+            if (const char next = s.at(i + 1); next == '"' || next == '\\') {
+                out.push_back(next);
+                ++i;
+                continue;
+            }
+        }
+        out.push_back(s.at(i));
+    }
+    return out;
+}
+
+std::string decode_word_token(const antlr4::Token &token) {
+    std::string text = token.getText();
+    const std::size_t type = token.getType();
+
+    if (type == ShellLexer::SQ_STRING) {
+        if (text.size() >= 2 && text.front() == '\'' && text.back() == '\'') {
+            return unescape_single_quoted(
+                std::string_view(text).substr(1, text.size() - 2)
+            );
+        }
+        return text;
+    }
+
+    if (type == ShellLexer::DQ_STRING) {
+        if (text.size() >= 2 && text.front() == '"' && text.back() == '"') {
+            return unescape_double_quoted(
+                std::string_view(text).substr(1, text.size() - 2)
+            );
+        }
+        return text;
+    }
+
+    return text;
+}
+
+}  // namespace
+
+std::vector<std::string> collect_words(antlr4::CommonTokenStream &tokens) {
+    std::vector<std::string> out;
+    tokens.fill();
+
+    for (const antlr4::Token *t : tokens.getTokens()) {
+        if (t == nullptr) {
+            continue;
+        }
+
+        if (const std::size_t type = t->getType();
+            type == ShellLexer::WORD || type == ShellLexer::SQ_STRING ||
+            type == ShellLexer::DQ_STRING) {
+            out.push_back(decode_word_token(*t));
+        }
+    }
+
+    return out;
+}
+
+}  // namespace btft
