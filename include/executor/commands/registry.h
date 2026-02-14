@@ -1,9 +1,10 @@
 #pragma once
 
+#include <concepts>
 #include <unordered_map>
-#include "commands/icommand.h"
+#include "icommand.h"
 
-namespace NInterpretator::NExecutor {
+namespace interpretator::executor {
 
 class CommandsRegistry {
 public:
@@ -12,31 +13,29 @@ public:
         return instance;
     }
 
-    void registerCommand(
-        const std::string &name,
-        NCommands::CommandCreator commandCreator
-    ) {
-        registry.emplace(name, commandCreator());
+    template <commands::DerivedFromICommand CommandType>
+    void registerCommand(const std::string &name) {
+        registry.emplace(name, CommandType::createCommand());
     }
 
-    std::shared_ptr<NCommands::ICommand> getCommand(const std::string &name) {
+    std::shared_ptr<commands::ICommand> getCommand(const std::string &name) {
         auto commandIterator = registry.find(name);
         if (commandIterator == registry.end()) {
-            return nullptr;
+            return nullptr;  // TODO: return external command here
         }
         return commandIterator->second;
     }
 
 private:
     CommandsRegistry() = default;
+
     CommandsRegistry(const CommandsRegistry &other) = delete;
     CommandsRegistry(CommandsRegistry &&other) = delete;
 
     CommandsRegistry &operator=(const CommandsRegistry &other) = delete;
     CommandsRegistry &operator=(CommandsRegistry &&other) = delete;
 
-    std::unordered_map<std::string, std::shared_ptr<NCommands::ICommand>>
+    std::unordered_map<std::string, std::shared_ptr<commands::ICommand>>
         registry;
 };
-
-}  // namespace NInterpretator::NExecutor
+}  // namespace interpretator::executor

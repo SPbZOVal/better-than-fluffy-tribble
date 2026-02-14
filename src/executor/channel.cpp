@@ -1,36 +1,32 @@
-#include "channel.h"
+#include "executor/channel.h"
 #include <exception>
 #include <iostream>
 
-namespace NInterpretator::NExecutor {
+namespace interpretator::executor {
 
 void Channel::write(const std::string &buffer) {
     std::unique_lock<std::mutex> mutexWrite(mutex);
     if (closed) {
         throw std::runtime_error("Channel is closed, you can't write into it");
     }
-    readBuffer += buffer;
-    mutexWrite.unlock();
-
+    readBuffer << buffer;
     condVar.notify_all();
 }
 
 std::string Channel::read() {
     std::unique_lock<std::mutex> mutexRead(mutex);
     condVar.wait(mutexRead, [this]() {
-        return closed || readBuffer.size() != 0;
+        return closed || readBuffer.str().size() != 0;
     });
 
-    std::string result = std::move(readBuffer);
-    readBuffer.clear();
+    std::string result = std::move(readBuffer.str());
+    readBuffer.str("");
     return result;
 }
 
 void Channel::closeChannel() {
-    {
-        std::unique_lock<std::mutex> mutexClose(mutex);
-        closed = true;
-    }
+    std::unique_lock<std::mutex> mutexClose(mutex);
+    closed = true;
     condVar.notify_all();
 }
 
@@ -59,4 +55,4 @@ void OutputStdChannel::write(const std::string &buffer) {
 void OutputStdChannel::closeChannel() {
 }
 
-}  // namespace NInterpretator::NExecutor
+}  // namespace interpretator::executor

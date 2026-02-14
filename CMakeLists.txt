@@ -9,10 +9,10 @@ endif()
 
 set(SOURCES
   src/main.cpp
-    src/commands/echo.cpp
-    src/channel.cpp
-    src/executor.cpp
+  src/executor/executor.cpp
+  src/executor/channel.cpp
+  src/executor/commands/echo.cpp
 )
 
+include_directories(include)
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_include_directories(${PROJECT_NAME} PUBLIC include)

@@ -5,7 +5,7 @@
 #include <sstream>
 #include <string>
 
-namespace NInterpretator::NExecutor {
+namespace interpretator::executor {
 class IChannel {
 public:
     virtual void closeChannel() = 0;
@@ -49,7 +49,7 @@ public:
 private:
     std::mutex mutex;
     std::condition_variable condVar;
-    std::string readBuffer;
+    std::stringstream readBuffer;
     bool closed = false;
 };
-}  // namespace NInterpretator::NExecutor
+}  // namespace interpretator::executor

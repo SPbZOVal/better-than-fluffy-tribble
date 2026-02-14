@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace NInterpetator {
+namespace interpretator {
 struct CommandNode {
     std::string name;
     std::vector<std::string> args;
@@ -12,4 +12,4 @@ struct CommandNode {
 struct ExecutionResult {
     int returnCode;
 };
-}  // namespace NInterpetator
+}  // namespace interpretator
