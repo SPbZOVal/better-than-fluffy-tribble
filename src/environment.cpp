@@ -3,20 +3,43 @@
 
 namespace btft {
 
-void Environment::set(const std::string &name, const std::string &value) {
-    vars[name] = value;
+void Environment::set_local(const std::string &name, const std::string &value) {
+    local_vars[name] = value;
 }
 
-std::optional<std::string> Environment::get(const std::string &name) const {
-    if (const auto it = vars.find(name); it == vars.end()) {
+std::optional<std::string> Environment::get_local(
+    const std::string &name
+) const {
+    if (const auto it = local_vars.find(name); it == local_vars.end()) {
         return std::nullopt;
     } else {
         return it->second;
     }
 }
 
-bool Environment::has(const std::string &name) const {
-    return vars.contains(name);
+bool Environment::has_local(const std::string &name) const {
+    return local_vars.contains(name);
+}
+
+void Environment::set_global(
+    const std::string &name,
+    const std::string &value
+) {
+    global_vars[name] = value;
+}
+
+std::optional<std::string> Environment::get_global(
+    const std::string &name
+) const {
+    if (const auto it = global_vars.find(name); it == global_vars.end()) {
+        return std::nullopt;
+    } else {
+        return it->second;
+    }
+}
+
+bool Environment::has_global(const std::string &name) const {
+    return global_vars.contains(name);
 }
 
 }  // namespace btft

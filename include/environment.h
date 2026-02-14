@@ -13,14 +13,19 @@ public:
         return env;
     }
 
-    void set(const std::string &name, const std::string &value);
-    std::optional<std::string> get(const std::string &name) const;
-    bool has(const std::string &name) const;
+    void set_local(const std::string &name, const std::string &value);
+    std::optional<std::string> get_local(const std::string &name) const;
+    bool has_local(const std::string &name) const;
+
+    void set_global(const std::string &name, const std::string &value);
+    std::optional<std::string> get_global(const std::string &name) const;
+    bool has_global(const std::string &name) const;
 
 private:
     Environment() = default;
 
-    std::unordered_map<std::string, std::string> vars;
+    std::unordered_map<std::string, std::string> local_vars;
+    std::unordered_map<std::string, std::string> global_vars;
 };
 
 }  // namespace btft
