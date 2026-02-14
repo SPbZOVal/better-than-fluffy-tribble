@@ -27,9 +27,9 @@ WORD
   ;
 
 fragment WORD_CHAR
-  : ~[ \t\f\v\r\n'"]
+  : ~[ \t\f\r\n'"]
   ;
 
 WS
-  : [ \t\f\v]+ -> skip
+  : [ \t\f]+ -> skip
   ;
