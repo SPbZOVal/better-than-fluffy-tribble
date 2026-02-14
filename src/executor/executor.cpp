@@ -47,12 +47,9 @@ interpretator::ExecutionResult ExecutePipeline(
     outputChannels.back() = std::make_shared<OutputStdChannel>();
 
     for (std::size_t i = 0; i < nodes.size(); ++i) {
-        pipeline.push_back(
-            std::thread{
-                SingleNodeExecution, inputChannels[i], outputChannels[i],
-                std::cref(nodes[i])
-            }
-        );
+        pipeline.push_back(std::thread{
+            SingleNodeExecution, inputChannels[i], outputChannels[i],
+            std::cref(nodes[i])});
     }
 
     for (auto &thread : pipeline) {
