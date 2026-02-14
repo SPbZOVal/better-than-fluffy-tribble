@@ -1,28 +1,30 @@
 #pragma once
 
 #include <antlr4-runtime.h>
+#include <optional>
 #include <string>
 #include <vector>
 
-namespace btft {
+namespace btft::parser {
 
-class CountingErrorListener final : public antlr4::BaseErrorListener {
+class ParserErrorListener final : public antlr4::BaseErrorListener {
 public:
-    [[nodiscard]] int get_errors() const;
+    [[nodiscard]] std::optional<std::size_t>
+    get_error_char_position() const noexcept;
 
 private:
     void syntaxError(
         antlr4::Recognizer *recognizer,
         antlr4::Token *offending_symbol,
-        size_t line,
-        size_t char_position_in_line,
+        std::size_t line,
+        std::size_t char_position_in_line,
         const std::string &msg,
         std::exception_ptr e
     ) override;
 
-    int errors = 0;
+    std::optional<std::size_t> error_char_position;
 };
 
 std::vector<std::string> collect_words(antlr4::CommonTokenStream &tokens);
 
-}  // namespace btft
+}  // namespace btft::parser

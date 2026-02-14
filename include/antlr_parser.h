@@ -2,7 +2,7 @@
 
 #include "parser.h"
 
-namespace btft {
+namespace btft::parser {
 
 class AntlrParser final : public IParser {
 public:
@@ -10,4 +10,4 @@ public:
     [[nodiscard]] ParseResult parse(std::string_view input) const override;
 };
 
-}  // namespace btft
+}  // namespace btft::parser

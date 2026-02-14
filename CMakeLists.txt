@@ -7,7 +7,7 @@ if (POLICY CMP0135)
     cmake_policy(SET CMP0135 NEW)
 endif ()
 
-project(better_than_fluffy_tribble LANGUAGES CXX)
+project(btft LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

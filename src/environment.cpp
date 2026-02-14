@@ -3,8 +3,8 @@
 
 namespace btft {
 
-void Environment::set(std::string name, std::string value) {
-    vars[std::move(name)] = std::move(value);
+void Environment::set(const std::string &name, const std::string &value) {
+    vars[name] = value;
 }
 
 std::optional<std::string> Environment::get(const std::string &name) const {

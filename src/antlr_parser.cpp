@@ -6,7 +6,6 @@
 #include "ShellParser.h"
 
 // Other
-#include <map>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -14,35 +13,9 @@
 #include "antlr_support.h"
 #include "ast_nodes.h"
 
-namespace btft {
-
-[[nodiscard]] std::string to_string(CommandKind kind) {
-    static const std::map<CommandKind, std::string> kBuiltinName = {
-        {CommandKind::kCat, "cat"},   {CommandKind::kEcho, "echo"},
-        {CommandKind::kWc, "wc"},     {CommandKind::kPwd, "pwd"},
-        {CommandKind::kExit, "exit"}, {CommandKind::kExternal, "<external>"}
-    };
-
-    if (const auto it = kBuiltinName.find(kind); it != kBuiltinName.end()) {
-        return it->second;
-    }
-    throw std::runtime_error("unhandled command kind at to_string!");
-}
+namespace btft::parser {
 
 namespace {
-
-CommandKind resolve_command_kind(std::string_view name) {
-    static const std::map<std::string_view, CommandKind> kBuiltinName = {
-        {"cat", CommandKind::kCat},   {"echo", CommandKind::kEcho},
-        {"wc", CommandKind::kWc},     {"pwd", CommandKind::kPwd},
-        {"exit", CommandKind::kExit},
-    };
-
-    if (const auto it = kBuiltinName.find(name); it != kBuiltinName.end()) {
-        return it->second;
-    }
-    return CommandKind::kExternal;
-}
 
 // TODO: refactor once pipes will be implemented
 PipelineNode build_pipeline_from_words(const std::vector<std::string> &words) {
@@ -54,9 +27,7 @@ PipelineNode build_pipeline_from_words(const std::vector<std::string> &words) {
     std::string name = words.front();
     auto args = std::vector(words.begin() + 1, words.end());
 
-    pipeline.add_command(CommandNode(
-        std::move(name), resolve_command_kind(words.front()), std::move(args)
-    ));
+    pipeline.add_command(CommandNode(std::move(name), std::move(args)));
     return pipeline;
 }
 
@@ -67,7 +38,7 @@ ParseResult AntlrParser::parse(std::string_view input) const {
     ShellLexer lexer(&stream);
     antlr4::CommonTokenStream tokens(&lexer);
 
-    CountingErrorListener error_listener;
+    ParserErrorListener error_listener;
     lexer.removeErrorListeners();
     lexer.addErrorListener(&error_listener);
 
@@ -77,8 +48,10 @@ ParseResult AntlrParser::parse(std::string_view input) const {
 
     parser.line();
 
-    if (error_listener.get_errors() != 0) {
-        return ParseResult::error("syntax error");
+    if (const auto pos = error_listener.get_error_char_position(); pos) {
+        return ParseResult::error(
+            "syntax error at " + std::to_string(*pos) + " symbol"
+        );
     }
 
     const std::vector<std::string> words = collect_words(tokens);
@@ -86,4 +59,4 @@ ParseResult AntlrParser::parse(std::string_view input) const {
     return ParseResult::ok(std::move(pipeline));
 }
 
-}  // namespace btft
+}  // namespace btft::parser

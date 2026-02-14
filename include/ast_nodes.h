@@ -1,40 +1,20 @@
 #pragma once
 
-#include <cstdint>
 #include <string>
 #include <string_view>
 #include <utility>
 #include <vector>
 
-namespace btft {
-
-enum class CommandKind : std::uint8_t {
-    kCat,
-    kEcho,
-    kWc,
-    kPwd,
-    kExit,
-    kExternal,
-};
-
-[[nodiscard]] std::string to_string(CommandKind kind);
+namespace btft::parser {
 
 class CommandNode final {
 public:
-    CommandNode(
-        std::string name,
-        CommandKind kind,
-        std::vector<std::string> args
-    )
-        : name_(std::move(name)), kind_(kind), args_(std::move(args)) {
+    CommandNode(std::string name, std::vector<std::string> args)
+        : name_(std::move(name)), args_(std::move(args)) {
     }
 
     [[nodiscard]] std::string_view get_name() const noexcept {
         return name_;
-    }
-
-    [[nodiscard]] CommandKind get_kind() const noexcept {
-        return kind_;
     }
 
     [[nodiscard]] const std::vector<std::string> &get_args() const noexcept {
@@ -43,7 +23,6 @@ public:
 
 private:
     std::string name_;
-    CommandKind kind_;
     std::vector<std::string> args_;
 };
 
@@ -63,7 +42,8 @@ public:
         return commands.size();
     }
 
-    [[nodiscard]] const std::vector<CommandNode> &get_commands() const noexcept {
+    [[nodiscard]] const std::vector<CommandNode> &
+    get_commands() const noexcept {
         return commands;
     }
 
@@ -75,4 +55,4 @@ private:
     std::vector<CommandNode> commands;
 };
 
-}  // namespace btft
+}  // namespace btft::parser

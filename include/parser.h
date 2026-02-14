@@ -4,7 +4,7 @@
 #include <string>
 #include "ast_nodes.h"
 
-namespace btft {
+namespace btft::parser {
 
 struct ParseResult {
     std::optional<PipelineNode> pipeline;  // NOLINT
@@ -39,4 +39,4 @@ public:
     IParser &operator=(IParser &&) = delete;
 };
 
-}  // namespace btft
+}  // namespace btft::parser

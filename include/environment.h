@@ -8,12 +8,12 @@ namespace btft {
 
 class Environment final {
 public:
-    static Environment &instance() {
+    static Environment &get_instance() {
         static Environment env;
         return env;
     }
 
-    void set(std::string name, std::string value);
+    void set(const std::string &name, const std::string &value);
     std::optional<std::string> get(const std::string &name) const;
     bool has(const std::string &name) const;
 
