@@ -15,21 +15,11 @@ word
   ;
 
 SQ_STRING
-  : '\'' ( SQ_ESC | ~['\r\n\\] )* '\''
+  : '\'' (~['\r\n])* '\''
   ;
 
 DQ_STRING
-  : '"' ( DQ_ESC | ~["\r\n\\] )* '"'
-  ;
-
-fragment SQ_ESC
-  : '\\' '\''
-  | '\\' '\\'
-  ;
-
-fragment DQ_ESC
-  : '\\' '"'
-  | '\\' '\\'
+  : '"' (~["\r\n])* '"'
   ;
 
 WORD

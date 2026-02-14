@@ -1,6 +1,6 @@
-#include <iostream>
+#include "shell_repl.h"
 
 int main() {
-    std::cout << "Hello reader!" << std::endl;
-    return 0;
+    const btft::ShellRepl repl;
+    return repl.run();
 }
