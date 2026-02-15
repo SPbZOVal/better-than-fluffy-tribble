@@ -18,8 +18,7 @@ ShellRepl::ShellRepl()
       preprocessor(std::make_unique<parser::Preprocessor>()) {
 }
 
-interpreter::ExecutionResult ShellRepl::process_line(
-    std::string_view raw_input
+interpreter::ExecutionResult ShellRepl::process_line(std::string_view raw_input
 ) const {
     using interpreter::ExecutionResult;
     using interpreter::PipelineNode;

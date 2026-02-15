@@ -40,8 +40,8 @@ public:
         return commands.size();
     }
 
-    [[nodiscard]] const std::vector<CommandNode> &
-    get_commands() const noexcept {
+    [[nodiscard]] const std::vector<CommandNode> &get_commands(
+    ) const noexcept {
         return commands;
     }
 

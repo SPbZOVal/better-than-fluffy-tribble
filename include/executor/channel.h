@@ -9,7 +9,7 @@ namespace btft::interpreter::executor {
 
 class IChannel {
 public:
-    virtual ~IChannel() = default; // ilya uebishe
+    virtual ~IChannel() = default;
     virtual void closeChannel() = 0;
 };
 

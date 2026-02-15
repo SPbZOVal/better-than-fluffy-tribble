@@ -7,8 +7,7 @@ void Environment::set_local(const std::string &name, const std::string &value) {
     local_vars[name] = value;
 }
 
-std::optional<std::string> Environment::get_local(
-    const std::string &name
+std::optional<std::string> Environment::get_local(const std::string &name
 ) const {
     if (const auto it = local_vars.find(name); it == local_vars.end()) {
         return std::nullopt;
@@ -28,8 +27,7 @@ void Environment::set_global(
     global_vars[name] = value;
 }
 
-std::optional<std::string> Environment::get_global(
-    const std::string &name
+std::optional<std::string> Environment::get_global(const std::string &name
 ) const {
     if (const auto it = global_vars.find(name); it == global_vars.end()) {
         return std::nullopt;
@@ -40,6 +38,18 @@ std::optional<std::string> Environment::get_global(
 
 bool Environment::has_global(const std::string &name) const {
     return global_vars.contains(name);
+}
+
+bool Environment::has_var(const std::string &name) const {
+    return has_local(name) || has_global(name);
+}
+
+std::optional<std::string> Environment::get_var(const std::string &name) const {
+    if (const auto local_var = get_local(name); local_var) {
+        return local_var;
+    } else {
+        return get_global(name);
+    }
 }
 
 }  // namespace btft

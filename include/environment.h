@@ -21,6 +21,9 @@ public:
     std::optional<std::string> get_global(const std::string &name) const;
     bool has_global(const std::string &name) const;
 
+    bool has_var(const std::string &name) const;
+    std::optional<std::string> get_var(const std::string &name) const;
+
 private:
     Environment() = default;
 
