@@ -1,10 +1,9 @@
 #pragma once
 
-#include <concepts>
 #include <unordered_map>
 #include "icommand.h"
 
-namespace interpretator::executor {
+namespace btft::interpreter::executor {
 
 class CommandsRegistry {
 public:
@@ -19,7 +18,7 @@ public:
     }
 
     std::shared_ptr<commands::ICommand> getCommand(const std::string &name) {
-        auto commandIterator = registry.find(name);
+        const auto commandIterator = registry.find(name);
         if (commandIterator == registry.end()) {
             return nullptr;  // TODO: return external command here
         }
@@ -38,4 +37,4 @@ private:
     std::unordered_map<std::string, std::shared_ptr<commands::ICommand>>
         registry;
 };
-}  // namespace interpretator::executor
+}  // namespace btft::interpreter::executor

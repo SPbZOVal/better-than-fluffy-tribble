@@ -1,6 +1,6 @@
 #pragma once
 
-#include "parser.h"
+#include "iparser.h"
 
 namespace btft::parser {
 

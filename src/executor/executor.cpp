@@ -4,26 +4,24 @@
 #include "executor/channel.h"
 #include "executor/commands/registry.h"
 
-namespace interpretator::executor {
+namespace btft::interpreter::executor {
 
 static void SingleNodeExecution(
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel,
-    const interpretator::CommandNode &node
+    const CommandNode &node
 ) {
-    auto command = CommandsRegistry::GetInstance().getCommand(node.name);
-    interpretator::ExecutionResult result =
-        command->Execute(node.args, inputChannel, outputChannel);
+    auto command = CommandsRegistry::GetInstance().getCommand(node.get_name());
+    ExecutionResult result =
+        command->Execute(node.get_args(), inputChannel, outputChannel);
     outputChannel->closeChannel();
 
-    if (result.returnCode != 0) {
+    if (result.exit_code != 0) {
         // TODO: send error status code to the channel
     }
 }
 
-interpretator::ExecutionResult ExecutePipeline(
-    const std::vector<interpretator::CommandNode> &nodes
-) {
+ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes) {
     std::vector<std::thread> pipeline;
 
     std::vector<std::shared_ptr<IInputChannel>> inputChannels(
@@ -47,18 +45,21 @@ interpretator::ExecutionResult ExecutePipeline(
     outputChannels.back() = std::make_shared<OutputStdChannel>();
 
     for (std::size_t i = 0; i < nodes.size(); ++i) {
-        pipeline.push_back(std::thread{
-            SingleNodeExecution, inputChannels[i], outputChannels[i],
-            std::cref(nodes[i])});
+        pipeline.push_back(
+            std::thread{
+                SingleNodeExecution, inputChannels[i], outputChannels[i],
+                std::cref(nodes[i])
+            }
+        );
     }
 
     for (auto &thread : pipeline) {
         thread.join();
     }
 
-    interpretator::ExecutionResult result;
-    result.returnCode = 0;
+    ExecutionResult result;
+    result.exit_code = 0;
     return result;
 }
 
-}  // namespace interpretator::executor
+}  // namespace btft::interpreter::executor

@@ -1,9 +1,9 @@
 #include "executor/commands/echo.h"
 #include <iostream>
 
-namespace interpretator::executor::commands {
+namespace btft::interpreter::executor::commands {
 
-interpretator::ExecutionResult EchoCommand::Execute(
+ExecutionResult EchoCommand::Execute(
     const std::vector<std::string> &args,
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel
@@ -12,7 +12,7 @@ interpretator::ExecutionResult EchoCommand::Execute(
         outputChannel->write(inputChannel->read());
     }
 
-    return interpretator::ExecutionResult{.returnCode = 0};
+    return ExecutionResult{};
 }
 
-}  // namespace interpretator::executor::commands
+}  // namespace btft::interpreter::executor::commands

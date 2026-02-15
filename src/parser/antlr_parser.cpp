@@ -1,4 +1,4 @@
-#include "antlr_parser.h"
+#include "parser/antlr_parser.h"
 
 // ANTLR
 #include <antlr4-runtime.h>
@@ -10,16 +10,18 @@
 #include <string_view>
 #include <utility>
 #include <vector>
-#include "antlr_support.h"
-#include "ast_nodes.h"
+#include "common.h"
+#include "parser/antlr_support.h"
 
 namespace btft::parser {
 
 namespace {
 
 // TODO: refactor once pipes will be implemented
-PipelineNode build_pipeline_from_words(const std::vector<std::string> &words) {
-    PipelineNode pipeline;
+interpreter::PipelineNode build_pipeline_from_words(
+    const std::vector<std::string> &words
+) {
+    interpreter::PipelineNode pipeline;
     if (words.empty()) {
         return pipeline;
     }
@@ -27,7 +29,9 @@ PipelineNode build_pipeline_from_words(const std::vector<std::string> &words) {
     std::string name = words.front();
     auto args = std::vector(words.begin() + 1, words.end());
 
-    pipeline.add_command(CommandNode(std::move(name), std::move(args)));
+    pipeline.add_command(
+        interpreter::CommandNode(std::move(name), std::move(args))
+    );
     return pipeline;
 }
 
@@ -55,7 +59,7 @@ ParseResult AntlrParser::parse(std::string_view input) const {
     }
 
     const std::vector<std::string> words = collect_words(tokens);
-    PipelineNode pipeline = build_pipeline_from_words(words);
+    interpreter::PipelineNode pipeline = build_pipeline_from_words(words);
     return ParseResult::ok(std::move(pipeline));
 }
 

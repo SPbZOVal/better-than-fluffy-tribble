@@ -6,16 +6,11 @@
 #include <ranges>
 #include <string>
 #include <string_view>
-#include "parser.h"
-#include "preprocessor.h"
+#include "common.h"
+#include "parser/iparser.h"
+#include "parser/preprocessor.h"
 
 namespace btft {
-
-struct ExecutionResult {
-    int exit_code = 0;
-    bool should_exit = false;
-    std::string error_message;
-};
 
 class ShellRepl final {
 public:
@@ -33,7 +28,7 @@ private:
         });
     }
 
-    [[nodiscard]] ExecutionResult process_line(
+    [[nodiscard]] interpreter::ExecutionResult process_line(
         std::string_view raw_input
     ) const;
 
@@ -42,4 +37,4 @@ private:
     static constexpr std::string_view kPromptPrefix = "$ ";
 };
 
-}  // namespace btft::parser
+}  // namespace btft

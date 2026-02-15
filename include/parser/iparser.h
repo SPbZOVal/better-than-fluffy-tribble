@@ -2,15 +2,15 @@
 
 #include <optional>
 #include <string>
-#include "ast_nodes.h"
+#include "common.h"
 
 namespace btft::parser {
 
 struct ParseResult {
-    std::optional<PipelineNode> pipeline;  // NOLINT
-    std::string error_message;             // NOLINT
+    std::optional<interpreter::PipelineNode> pipeline;  // NOLINT
+    std::string error_message;                          // NOLINT
 
-    static ParseResult ok(PipelineNode p) {
+    static ParseResult ok(interpreter::PipelineNode p) {
         ParseResult r;
         r.pipeline = std::move(p);
         return r;
