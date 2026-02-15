@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include "icommand.h"
+#include "executor/commands/external.h"
 
 namespace btft::interpreter::executor {
 
@@ -20,7 +21,8 @@ public:
     std::shared_ptr<commands::ICommand> getCommand(const std::string &name) {
         const auto commandIterator = registry.find(name);
         if (commandIterator == registry.end()) {
-            return nullptr;  // TODO: return external command here
+            // Return external command for unknown commands
+            return std::make_shared<commands::ExternalCommand>();
         }
         return commandIterator->second;
     }

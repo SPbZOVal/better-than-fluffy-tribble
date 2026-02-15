@@ -8,9 +8,13 @@ ExecutionResult EchoCommand::Execute(
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel
 ) {
-    while (!inputChannel->isClosed()) {
-        outputChannel->write(inputChannel->read());
+    for (size_t i = 0; i < args.size(); ++i) {
+        outputChannel->write(args[i]);
+        if (i != args.size() - 1) {
+            outputChannel->write(" ");
+        }
     }
+    outputChannel->write("\n");
 
     return ExecutionResult{};
 }
