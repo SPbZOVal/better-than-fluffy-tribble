@@ -1,17 +1,37 @@
 grammar Shell;
 
 line
-  : command? EOF
+  : EOF
+  | stmt EOF
+  ;
+
+stmt
+  : assignment+ command?
+  | command
+  ;
+
+assignment
+  : NAME '=' value
   ;
 
 command
-  : word (word)*
+  : word+
+  ;
+
+value
+  : word
   ;
 
 word
   : WORD
+  // otherwise it matches word as NAME and expects `=`
+  | NAME
   | SQ_STRING
   | DQ_STRING
+  ;
+
+NAME
+  : [a-zA-Z_][a-zA-Z0-9_]*
   ;
 
 SQ_STRING

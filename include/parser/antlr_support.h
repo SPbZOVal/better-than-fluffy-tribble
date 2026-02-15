@@ -25,6 +25,10 @@ private:
     std::optional<std::size_t> error_char_position;
 };
 
-std::vector<std::string> collect_words(antlr4::CommonTokenStream &tokens);
+[[nodiscard]] std::string decode_word_token(const antlr4::Token &token);
+
+[[nodiscard]] std::vector<std::string> collect_words(
+    antlr4::CommonTokenStream &tokens
+);
 
 }  // namespace btft::parser
