@@ -2,10 +2,8 @@
 
 #include "common.h"
 
-namespace interpretator::executor {
+namespace btft::interpreter::executor {
 
-interpretator::ExecutionResult ExecutePipeline(
-    const std::vector<interpretator::CommandNode> &nodes
-);
+ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes);
 
-}  // namespace interpretator::executor
+}  // namespace btft::interpreter::executor

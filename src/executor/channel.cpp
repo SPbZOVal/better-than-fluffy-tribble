@@ -1,11 +1,10 @@
 #include "executor/channel.h"
-#include <exception>
 #include <iostream>
 
-namespace interpretator::executor {
+namespace btft::interpreter::executor {
 
 void Channel::write(const std::string &buffer) {
-    std::unique_lock<std::mutex> mutexWrite(mutex);
+    std::unique_lock mutexWrite(mutex);
     if (closed) {
         throw std::runtime_error("Channel is closed, you can't write into it");
     }
@@ -14,7 +13,7 @@ void Channel::write(const std::string &buffer) {
 }
 
 std::string Channel::read() {
-    std::unique_lock<std::mutex> mutexRead(mutex);
+    std::unique_lock mutexRead(mutex);
     condVar.wait(mutexRead, [this]() {
         return closed || readBuffer.str().size() != 0;
     });
@@ -25,7 +24,7 @@ std::string Channel::read() {
 }
 
 void Channel::closeChannel() {
-    std::unique_lock<std::mutex> mutexClose(mutex);
+    std::unique_lock mutexClose(mutex);
     closed = true;
     condVar.notify_all();
 }
@@ -55,4 +54,4 @@ void OutputStdChannel::write(const std::string &buffer) {
 void OutputStdChannel::closeChannel() {
 }
 
-}  // namespace interpretator::executor
+}  // namespace btft::interpreter::executor

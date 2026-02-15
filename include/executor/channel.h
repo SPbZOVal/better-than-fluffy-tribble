@@ -5,9 +5,11 @@
 #include <sstream>
 #include <string>
 
-namespace interpretator::executor {
+namespace btft::interpreter::executor {
+
 class IChannel {
 public:
+    virtual ~IChannel() = default;
     virtual void closeChannel() = 0;
 };
 
@@ -52,4 +54,5 @@ private:
     std::stringstream readBuffer;
     bool closed = false;
 };
-}  // namespace interpretator::executor
+
+}  // namespace interpreter::executor

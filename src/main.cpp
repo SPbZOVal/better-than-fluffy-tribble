@@ -1,3 +1,6 @@
+#include "shell_repl.h"
+
 int main() {
-    return 0;
+    const btft::ShellRepl repl;
+    return repl.run();
 }
