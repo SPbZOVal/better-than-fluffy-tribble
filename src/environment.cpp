@@ -20,10 +20,7 @@ bool Environment::HasLocal(const std::string &name) const {
     return local_vars.contains(name);
 }
 
-void Environment::SetGlobal(
-    const std::string &name,
-    const std::string &value
-) {
+void Environment::SetGlobal(const std::string &name, const std::string &value) {
     global_vars[name] = value;
 }
 

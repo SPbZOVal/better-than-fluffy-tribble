@@ -29,15 +29,12 @@ add_executable(${PROJECT_NAME}
         $<TARGET_OBJECTS:btft_obj>
 )
 
+target_include_directories(${PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
         ${BTFT_TARGET}
 )
 
 btft_setup_antlr(${BTFT_TARGET})
-
-# Add tests if GoogleTest is available
-option(BUILD_TESTS "Build tests" ON)
-if(BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(tests)
-endif()

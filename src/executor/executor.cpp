@@ -82,12 +82,9 @@ ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes) {
     output_channels.back() = std::make_shared<OutputStdChannel>();
 
     for (std::size_t i = 0; i < nodes.size(); ++i) {
-        pipeline.push_back(
-            std::thread{
-                SingleNodeExecution, input_channels[i], output_channels[i],
-                std::cref(nodes[i]), state
-            }
-        );
+        pipeline.push_back(std::thread{
+            SingleNodeExecution, input_channels[i], output_channels[i],
+            std::cref(nodes[i]), state});
     }
 
     for (auto &thread : pipeline) {
