@@ -19,7 +19,6 @@ ExecutionResult ExitCommand::
     ExecutionResult result;
     result.exit_code = exit_code;
     result.should_exit = true;
-
     return result;
 }
 

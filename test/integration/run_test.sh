@@ -36,9 +36,13 @@ fi
 
 echo "Running test: $TEST_NAME"
 
-# For pwd test, we need to run from the test directory
+# For pwd test, we need to run from the test directory and generate expected output
 if [ "$TEST_NAME" = "pwd_test" ]; then
     cd "$TEST_DIR"
+    # Generate expected output with actual pwd
+    ACTUAL_PWD=$(pwd)
+    echo ">${ACTUAL_PWD}" > "$TEST_EXPECTED_FILE"
+    echo ">" >> "$TEST_EXPECTED_FILE"
 fi
 
 # Run the test by feeding input to btft and capturing output

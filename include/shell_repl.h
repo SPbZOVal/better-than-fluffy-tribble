@@ -34,7 +34,7 @@ private:
 
     std::unique_ptr<parser::IParser> parser;
     std::unique_ptr<parser::Preprocessor> preprocessor;
-    static constexpr std::string_view kPromptPrefix = "$ ";
+    static constexpr std::string_view kPromptPrefix = ">";
 };
 
 }  // namespace btft

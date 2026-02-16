@@ -1,28 +1,52 @@
 #include "executor/executor.h"
+#include <atomic>
 #include <iostream>
+#include <memory>
+#include <mutex>
 #include <thread>
 #include "executor/channel.h"
 #include "executor/commands/registry.h"
 
 namespace btft::interpreter::executor {
 
+struct PipelineState {
+    std::atomic<bool> should_stop{false};
+    std::atomic<int> exit_code{0};
+    std::atomic<bool> should_exit{false};
+    std::mutex mutex;
+};
+
 static void SingleNodeExecution(
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel,
-    const CommandNode &node
+    const CommandNode &node,
+    std::shared_ptr<PipelineState> state
 ) {
+    // Check if pipeline should stop before executing
+    if (state->should_stop.load()) {
+        outputChannel->closeChannel();
+        return;
+    }
+
     auto command = CommandsRegistry::GetInstance().getCommand(node.get_name());
     ExecutionResult result =
         command->Execute(node.get_args(), inputChannel, outputChannel);
     outputChannel->closeChannel();
 
-    if (result.exit_code != 0) {
-        // TODO: send error status code to the channel
+    // Update pipeline state if command failed or requested exit
+    if (result.exit_code != 0 || result.should_exit) {
+        bool expected = false;
+        if (state->should_stop.compare_exchange_strong(expected, true)) {
+            // First thread to set error state
+            state->exit_code.store(result.exit_code);
+            state->should_exit.store(result.should_exit);
+        }
     }
 }
 
 ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes) {
     std::vector<std::thread> pipeline;
+    auto state = std::make_shared<PipelineState>();
 
     std::vector<std::shared_ptr<IInputChannel>> inputChannels(
         nodes.size(), nullptr
@@ -47,7 +71,7 @@ ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes) {
     for (std::size_t i = 0; i < nodes.size(); ++i) {
         pipeline.push_back(std::thread{
             SingleNodeExecution, inputChannels[i], outputChannels[i],
-            std::cref(nodes[i])});
+            std::cref(nodes[i]), state});
     }
 
     for (auto &thread : pipeline) {
@@ -55,7 +79,8 @@ ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes) {
     }
 
     ExecutionResult result;
-    result.exit_code = 0;
+    result.exit_code = state->exit_code.load();
+    result.should_exit = state->should_exit.load();
     return result;
 }
 

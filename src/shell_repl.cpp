@@ -65,6 +65,7 @@ int ShellRepl::run() const {
             std::cout << std::flush;
         }
     }
+    std::cout << std::endl;
 
     return execution_result.exit_code;
 }

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Run all integration tests
-set -e
 
 BUILD_DIR="../../build"
 
@@ -26,6 +25,7 @@ PASSED=0
 FAILED=0
 
 for test_name in "${TESTS[@]}"; do
+    echo "Running test: $test_name"
     if ./run_test.sh "$test_name"; then
         ((PASSED++))
     else
