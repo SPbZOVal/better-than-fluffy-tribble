@@ -27,7 +27,7 @@ public:
         std::shared_ptr<IOutputChannel> outputChannel
     ) override;
 
-    static std::shared_ptr<ICommand> createCommand() {
+    static std::shared_ptr<ICommand> CreateCommand() {
         return std::make_shared<WcCommand>();
     }
 };

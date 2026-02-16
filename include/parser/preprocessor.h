@@ -8,7 +8,7 @@ class Preprocessor final {
 public:
     // TODO
     // NOLINTNEXTLINE
-    [[nodiscard]] std::string preprocess(std::string_view raw_input) {
+    [[nodiscard]] std::string Preprocess(std::string_view raw_input) {
         return std::string(raw_input);
     }
 };

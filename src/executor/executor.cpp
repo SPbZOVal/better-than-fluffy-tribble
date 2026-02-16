@@ -17,21 +17,22 @@ struct PipelineState {
 };
 
 static void SingleNodeExecution(
-    std::shared_ptr<IInputChannel> inputChannel,
-    std::shared_ptr<IOutputChannel> outputChannel,
+    std::shared_ptr<IInputChannel> input_channel,
+    std::shared_ptr<IOutputChannel> output_channel,
     const CommandNode &node,
     std::shared_ptr<PipelineState> state
 ) {
     // Check if pipeline should stop before executing
     if (state->should_stop.load()) {
-        outputChannel->closeChannel();
+        output_channel->CloseChannel();
         return;
     }
 
-    auto command = CommandsRegistry::GetInstance().getCommand(node.get_name());
-    ExecutionResult result =
-        command->Execute(node.get_args(), inputChannel, outputChannel);
-    outputChannel->closeChannel();
+    const auto command =
+        CommandsRegistry::GetInstance().GetCommand(node.GetName());
+    const ExecutionResult result =
+        command->Execute(node.GetArgs(), input_channel, output_channel);
+    output_channel->CloseChannel();
 
     // Update pipeline state if command failed or requested exit
     if (result.exit_code != 0 || result.should_exit) {
@@ -48,30 +49,33 @@ ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes) {
     std::vector<std::thread> pipeline;
     auto state = std::make_shared<PipelineState>();
 
-    std::vector<std::shared_ptr<IInputChannel>> inputChannels(
+    std::vector<std::shared_ptr<IInputChannel>> input_channels(
         nodes.size(), nullptr
     );
-    std::vector<std::shared_ptr<IOutputChannel>> outputChannels(
+    std::vector<std::shared_ptr<IOutputChannel>> output_channels(
         nodes.size(), nullptr
     );
 
     for (std::size_t i = 0; i + 1 < nodes.size(); ++i) {
-        std::shared_ptr<Channel> commonChannel = std::make_shared<Channel>();
+        auto common_channel = std::make_shared<Channel>();
         // splits assignment into 2 lines
         // clang-format off
-        inputChannels[i + 1] = dynamic_pointer_cast<IInputChannel, Channel>(commonChannel);
-        outputChannels[i] = dynamic_pointer_cast<IOutputChannel, Channel>(commonChannel);
+        input_channels[i + 1] = dynamic_pointer_cast<IInputChannel, Channel>(common_channel);
+        output_channels[i] = dynamic_pointer_cast<IOutputChannel, Channel>(common_channel);
         // clang-format on
     }
 
     // create channels for std::cout and std::cin
-    inputChannels.front() = std::make_shared<InputStdChannel>();
-    outputChannels.back() = std::make_shared<OutputStdChannel>();
+    input_channels.front() = std::make_shared<InputStdChannel>();
+    output_channels.back() = std::make_shared<OutputStdChannel>();
 
     for (std::size_t i = 0; i < nodes.size(); ++i) {
-        pipeline.push_back(std::thread{
-            SingleNodeExecution, inputChannels[i], outputChannels[i],
-            std::cref(nodes[i]), state});
+        pipeline.push_back(
+            std::thread{
+                SingleNodeExecution, input_channels[i], output_channels[i],
+                std::cref(nodes[i]), state
+            }
+        );
     }
 
     for (auto &thread : pipeline) {

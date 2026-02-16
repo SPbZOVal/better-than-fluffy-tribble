@@ -23,11 +23,11 @@ public:
     ExternalCommand() = default;
     ExecutionResult Execute(
         const std::vector<std::string> &args,
-        std::shared_ptr<IInputChannel> inputChannel,
-        std::shared_ptr<IOutputChannel> outputChannel
+        std::shared_ptr<IInputChannel> input_channel,
+        std::shared_ptr<IOutputChannel> output_channel
     ) override;
 
-    static std::shared_ptr<ICommand> createCommand() {
+    static std::shared_ptr<ICommand> CreateCommand() {
         return std::make_shared<ExternalCommand>();
     }
 };

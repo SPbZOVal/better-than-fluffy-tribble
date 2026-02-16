@@ -5,16 +5,16 @@ namespace btft::interpreter::executor::commands {
 
 ExecutionResult EchoCommand::Execute(
     const std::vector<std::string> &args,
-    std::shared_ptr<IInputChannel> inputChannel,
-    std::shared_ptr<IOutputChannel> outputChannel
+    std::shared_ptr<IInputChannel> input_channel,
+    std::shared_ptr<IOutputChannel> output_channel
 ) {
     for (std::size_t i = 0; i < args.size(); ++i) {
-        outputChannel->write(args[i]);
+        output_channel->Write(args[i]);
         if (i != args.size() - 1) {
-            outputChannel->write(" ");
+            output_channel->Write(" ");
         }
     }
-    outputChannel->write("\n");
+    output_channel->Write("\n");
 
     return ExecutionResult{};
 }

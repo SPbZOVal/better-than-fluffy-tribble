@@ -6,12 +6,12 @@ namespace btft::interpreter::executor::commands {
 
 ExecutionResult CatCommand::Execute(
     const std::vector<std::string> &args,
-    std::shared_ptr<IInputChannel> inputChannel,
-    std::shared_ptr<IOutputChannel> outputChannel
+    std::shared_ptr<IInputChannel> input_channel,
+    std::shared_ptr<IOutputChannel> output_channel
 ) {
     if (args.empty()) {
-        while (!inputChannel->isClosed()) {
-            outputChannel->write(inputChannel->read());
+        while (!input_channel->IsClosed()) {
+            output_channel->Write(input_channel->Read());
         }
         return ExecutionResult{};
     }
@@ -24,7 +24,7 @@ ExecutionResult CatCommand::Execute(
 
         std::string line;
         while (std::getline(file, line)) {
-            outputChannel->write(line + "\n");
+            output_channel->Write(line + "\n");
         }
         file.close();
     }

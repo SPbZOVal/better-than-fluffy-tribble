@@ -10,19 +10,19 @@ struct ParseResult {
     std::optional<interpreter::PipelineNode> pipeline;  // NOLINT
     std::string error_message;                          // NOLINT
 
-    static ParseResult ok(interpreter::PipelineNode p) {
+    static ParseResult Ok(interpreter::PipelineNode p) {
         ParseResult r;
         r.pipeline = std::move(p);
         return r;
     }
 
-    static ParseResult error(std::string msg) {
+    static ParseResult Error(std::string msg) {
         ParseResult r;
         r.error_message = std::move(msg);
         return r;
     }
 
-    [[nodiscard]] bool is_ok() const noexcept {
+    [[nodiscard]] bool IsOk() const noexcept {
         return pipeline.has_value();
     }
 };
@@ -30,7 +30,7 @@ struct ParseResult {
 class IParser {
 public:
     IParser() = default;
-    [[nodiscard]] virtual ParseResult parse(std::string_view input) const = 0;
+    [[nodiscard]] virtual ParseResult Parse(std::string_view input) const = 0;
     virtual ~IParser() = default;
 
     IParser(const IParser &) = delete;

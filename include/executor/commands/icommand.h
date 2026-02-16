@@ -18,7 +18,7 @@ public:
         std::shared_ptr<IOutputChannel> outputChannel
     ) = 0;
 
-    static std::shared_ptr<ICommand> createCommand() {
+    static std::shared_ptr<ICommand> CreateCommand() {
         throw std::runtime_error("Unimplemented");
     }
 };
@@ -27,7 +27,7 @@ template <typename T>
 concept DerivedFromICommand =
     std::derived_from<T, ICommand> &&
     requires(T) {
-        { T::createCommand() } -> std::same_as<std::shared_ptr<ICommand>>;
+        { T::CreateCommand() } -> std::same_as<std::shared_ptr<ICommand>>;
     };
 
 }  // namespace btft::interpreter::executor::commands
