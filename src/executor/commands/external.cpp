@@ -8,8 +8,8 @@ namespace btft::interpreter::executor::commands {
 
 ExecutionResult ExternalCommand::Execute(
     const std::vector<std::string> &args,
-    std::shared_ptr<IInputChannel> inputChannel,
-    std::shared_ptr<IOutputChannel> outputChannel
+    std::shared_ptr<IInputChannel> input_channel,
+    std::shared_ptr<IOutputChannel> output_channel
 ) {
     if (args.empty()) {
         return ExecutionResult{.exit_code = 1, .should_exit = false};

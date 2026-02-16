@@ -9,7 +9,7 @@ namespace btft::parser {
 
 class ParserErrorListener final : public antlr4::BaseErrorListener {
 public:
-    [[nodiscard]] std::optional<std::size_t> get_error_char_position(
+    [[nodiscard]] std::optional<std::size_t> GetErrorCharPosition(
     ) const noexcept;
 
 private:
@@ -25,9 +25,9 @@ private:
     std::optional<std::size_t> error_char_position;
 };
 
-[[nodiscard]] std::string decode_word_token(const antlr4::Token &token);
+[[nodiscard]] std::string DecodeWordToken(const antlr4::Token &token);
 
-[[nodiscard]] std::vector<std::string> collect_words(
+[[nodiscard]] std::vector<std::string> CollectWords(
     antlr4::CommonTokenStream &tokens
 );
 

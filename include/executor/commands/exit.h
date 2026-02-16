@@ -25,7 +25,7 @@ public:
     Execute(const std::vector<std::string> &args, std::shared_ptr<IInputChannel>, std::shared_ptr<IOutputChannel>)
         override;
 
-    static std::shared_ptr<ICommand> createCommand() {
+    static std::shared_ptr<ICommand> CreateCommand() {
         return std::make_shared<ExitCommand>();
     }
 };

@@ -6,14 +6,14 @@ namespace btft::parser {
 
 namespace {
 
-template <char quote>
-    requires(quote == '\'' || quote == '"')
-[[nodiscard]] std::string unescape_quoted(std::string_view s) {
+template <char Quote>
+    requires(Quote == '\'' || Quote == '"')
+[[nodiscard]] std::string UnescapeQuoted(std::string_view s) {
     std::string out;
     out.reserve(s.size());
     for (std::size_t i = 0; i < s.size(); ++i) {
         if (s.at(i) == '\\' && i + 1 < s.size()) {
-            if (const char next = s.at(i + 1); next == quote) {
+            if (const char next = s.at(i + 1); next == Quote) {
                 out.push_back(next);
                 ++i;
                 continue;
@@ -26,7 +26,7 @@ template <char quote>
 
 }  // namespace
 
-std::string decode_word_token(const antlr4::Token &token) {
+std::string DecodeWordToken(const antlr4::Token &token) {
     std::string text = token.getText();
     auto good_quoted = [&text](char q) -> bool {
         return text.size() >= 2 && text.front() == q && text.back() == q;
@@ -35,7 +35,7 @@ std::string decode_word_token(const antlr4::Token &token) {
     switch (token.getType()) {
         case ShellLexer::SQ_STRING:
             if (good_quoted('\'')) {
-                return unescape_quoted<'\''>(
+                return UnescapeQuoted<'\''>(
                     std::string_view(text).substr(1, text.size() - 2)
                 );
             }
@@ -43,7 +43,7 @@ std::string decode_word_token(const antlr4::Token &token) {
 
         case ShellLexer::DQ_STRING:
             if (good_quoted('"')) {
-                return unescape_quoted<'"'>(
+                return UnescapeQuoted<'"'>(
                     std::string_view(text).substr(1, text.size() - 2)
                 );
             }
@@ -56,7 +56,7 @@ std::string decode_word_token(const antlr4::Token &token) {
     return text;
 }
 
-std::optional<std::size_t> ParserErrorListener::get_error_char_position(
+std::optional<std::size_t> ParserErrorListener::GetErrorCharPosition(
 ) const noexcept {
     return error_char_position;
 }
@@ -72,7 +72,7 @@ void ParserErrorListener::syntaxError(
     error_char_position = char_position_in_line;
 }
 
-std::vector<std::string> collect_words(antlr4::CommonTokenStream &tokens) {
+std::vector<std::string> CollectWords(antlr4::CommonTokenStream &tokens) {
     std::vector<std::string> out;
     tokens.fill();
 
@@ -84,7 +84,7 @@ std::vector<std::string> collect_words(antlr4::CommonTokenStream &tokens) {
         if (const std::size_t type = t->getType();
             type == ShellLexer::WORD || type == ShellLexer::SQ_STRING ||
             type == ShellLexer::DQ_STRING) {
-            out.push_back(decode_word_token(*t));
+            out.push_back(DecodeWordToken(*t));
         }
     }
 

@@ -10,43 +10,43 @@ namespace btft::interpreter::executor {
 class IChannel {
 public:
     virtual ~IChannel() = default;
-    virtual void closeChannel() = 0;
+    virtual void CloseChannel() = 0;
 };
 
 class IInputChannel : public IChannel {
 public:
     virtual ~IInputChannel() = default;
 
-    virtual std::string read() = 0;
-    virtual bool isClosed() const noexcept = 0;
+    virtual std::string Read() = 0;
+    virtual bool IsClosed() const noexcept = 0;
 };
 
 class IOutputChannel : public IChannel {
 public:
     virtual ~IOutputChannel() = default;
 
-    virtual void write(const std::string &buffer) = 0;
+    virtual void Write(const std::string &buffer) = 0;
 };
 
 class InputStdChannel final : public IInputChannel {
 public:
-    std::string read() override;
-    void closeChannel() override;
-    bool isClosed() const noexcept override;
+    std::string Read() override;
+    void CloseChannel() override;
+    bool IsClosed() const noexcept override;
 };
 
 class OutputStdChannel final : public IOutputChannel {
 public:
-    void write(const std::string &buffer) override;
-    void closeChannel() override;
+    void Write(const std::string &buffer) override;
+    void CloseChannel() override;
 };
 
 class Channel final : virtual public IOutputChannel, public IInputChannel {
 public:
-    void write(const std::string &buffer) override;
-    std::string read() override;
-    void closeChannel() override;
-    bool isClosed() const noexcept override;
+    void Write(const std::string &buffer) override;
+    std::string Read() override;
+    void CloseChannel() override;
+    bool IsClosed() const noexcept override;
 
 private:
     std::mutex mutex;

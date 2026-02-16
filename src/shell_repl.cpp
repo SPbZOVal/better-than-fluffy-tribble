@@ -19,15 +19,15 @@ ShellRepl::ShellRepl()
       preprocessor(std::make_unique<parser::Preprocessor>()) {
 }
 
-interpreter::ExecutionResult ShellRepl::process_line(std::string_view raw_input
+interpreter::ExecutionResult ShellRepl::ProcessLine(std::string_view raw_input
 ) const {
     using interpreter::ExecutionResult;
     using interpreter::PipelineNode;
 
-    const std::string input = preprocessor->preprocess(raw_input);
+    const std::string input = preprocessor->Preprocess(raw_input);
 
-    const parser::ParseResult parsed = parser->parse(input);
-    if (!parsed.is_ok()) {
+    const parser::ParseResult parsed = parser->Parse(input);
+    if (!parsed.IsOk()) {
         ExecutionResult res;
         res.exit_code = 1;
         res.error_message = parsed.error_message;
@@ -36,30 +36,30 @@ interpreter::ExecutionResult ShellRepl::process_line(std::string_view raw_input
 
     const PipelineNode &pipeline = parsed.pipeline.value();
 
-    if (!pipeline.empty()) {
-        return interpreter::executor::ExecutePipeline(pipeline.get_commands());
+    if (!pipeline.Empty()) {
+        return interpreter::executor::ExecutePipeline(pipeline.GetCommands());
     }
 
     return ExecutionResult{};
 }
 
-int ShellRepl::run() const {
+int ShellRepl::Run() const {
     using interpreter::ExecutionResult;
 
     std::string input;
     ExecutionResult execution_result{};
 
     while (!execution_result.should_exit) {
-        print_prompt();
+        PrintPrompt();
         if (!std::getline(std::cin, input)) {
             break;
         }
 
-        if (is_blank(input)) {
+        if (IsBlank(input)) {
             continue;
         }
 
-        execution_result = process_line(input);
+        execution_result = ProcessLine(input);
         if (!execution_result.error_message.empty()) {
             std::cout << execution_result.error_message << "\n";
             std::cout << std::flush;

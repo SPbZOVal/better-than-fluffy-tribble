@@ -14,17 +14,17 @@ public:
     }
 
     template <commands::DerivedFromICommand CommandType>
-    void registerCommand(const std::string &name) {
-        registry.emplace(name, CommandType::createCommand());
+    void RegisterCommand(const std::string &name) {
+        registry.emplace(name, CommandType::CreateCommand());
     }
 
-    std::shared_ptr<commands::ICommand> getCommand(const std::string &name) {
-        const auto commandIterator = registry.find(name);
-        if (commandIterator == registry.end()) {
+    std::shared_ptr<commands::ICommand> GetCommand(const std::string &name) {
+        const auto command_iterator = registry.find(name);
+        if (command_iterator == registry.end()) {
             // Return external command for unknown commands
             return std::make_shared<commands::ExternalCommand>();
         }
-        return commandIterator->second;
+        return command_iterator->second;
     }
 
 private:

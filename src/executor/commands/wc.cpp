@@ -19,7 +19,7 @@ std::tuple<std::size_t, std::size_t, std::size_t> CountStats(
         if (c == '\n') {
             lines++;
         }
-        if (std::isspace(static_cast<int>(c))) {
+        if (std::isspace(static_cast<unsigned char>(c))) {
             if (in_word) {
                 words++;
                 in_word = false;
@@ -48,12 +48,12 @@ ExecutionResult WcCommand::Execute(
 
     if (args.empty()) {
         std::string content;
-        while (!inputChannel->isClosed()) {
-            content += inputChannel->read();
+        while (!inputChannel->IsClosed()) {
+            content += inputChannel->Read();
         }
 
         const auto [lines, words, bytes] = CountStats(content);
-        outputChannel->write(
+        outputChannel->Write(
             std::to_string(lines) + " " + std::to_string(words) + " " +
             std::to_string(bytes) + "\n"
         );
@@ -77,14 +77,14 @@ ExecutionResult WcCommand::Execute(
         total_words += words;
         total_bytes += bytes;
 
-        outputChannel->write(
+        outputChannel->Write(
             std::to_string(lines) + " " + std::to_string(words) + " " +
             std::to_string(bytes) + " " + filename + "\n"
         );
     }
 
     if (args.size() > 1) {
-        outputChannel->write(
+        outputChannel->Write(
             std::to_string(total_lines) + " " + std::to_string(total_words) +
             " " + std::to_string(total_bytes) + " total\n"
         );

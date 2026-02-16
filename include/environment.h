@@ -8,27 +8,27 @@ namespace btft {
 
 class Environment final {
 public:
-    static Environment &get_instance() {
+    static Environment &GetInstance() {
         static Environment env;
         return env;
     }
 
-    void set_local(const std::string &name, const std::string &value);
-    std::optional<std::string> get_local(const std::string &name) const;
-    bool has_local(const std::string &name) const;
+    void SetLocal(const std::string &name, const std::string &value);
+    std::optional<std::string> GetLocal(const std::string &name) const;
+    bool HasLocal(const std::string &name) const;
 
-    void set_global(const std::string &name, const std::string &value);
-    std::optional<std::string> get_global(const std::string &name) const;
-    bool has_global(const std::string &name) const;
+    void SetGlobal(const std::string &name, const std::string &value);
+    std::optional<std::string> GetGlobal(const std::string &name) const;
+    bool HasGlobal(const std::string &name) const;
 
-    bool has_var(const std::string &name) const;
-    std::optional<std::string> get_var(const std::string &name) const;
+    bool HasVar(const std::string &name) const;
+    std::optional<std::string> GetVar(const std::string &name) const;
 
 private:
     Environment() = default;
 
-    std::unordered_map<std::string, std::string> local_vars;
-    std::unordered_map<std::string, std::string> global_vars;
+    std::unordered_map<std::string, std::string> local_vars{};
+    std::unordered_map<std::string, std::string> global_vars{};
 };
 
 }  // namespace btft
