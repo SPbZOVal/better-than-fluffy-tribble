@@ -9,8 +9,8 @@ namespace btft::parser {
 
 class ParserErrorListener final : public antlr4::BaseErrorListener {
 public:
-    [[nodiscard]] std::optional<std::size_t>
-    get_error_char_position() const noexcept;
+    [[nodiscard]] std::optional<std::size_t> get_error_char_position(
+    ) const noexcept;
 
 private:
     void syntaxError(

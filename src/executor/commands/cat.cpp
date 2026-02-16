@@ -16,7 +16,7 @@ ExecutionResult CatCommand::Execute(
         return ExecutionResult{};
     }
 
-    for (const auto& filename : args) {
+    for (const auto &filename : args) {
         std::ifstream file(filename);
         if (!file.is_open()) {
             return ExecutionResult{.exit_code = 1};

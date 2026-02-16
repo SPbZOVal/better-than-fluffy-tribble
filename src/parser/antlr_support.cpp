@@ -56,8 +56,8 @@ std::string decode_word_token(const antlr4::Token &token) {
     return text;
 }
 
-std::optional<std::size_t>
-ParserErrorListener::get_error_char_position() const noexcept {
+std::optional<std::size_t> ParserErrorListener::get_error_char_position(
+) const noexcept {
     return error_char_position;
 }
 

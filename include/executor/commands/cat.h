@@ -7,8 +7,9 @@ namespace btft::interpreter::executor::commands {
 /**
  * CatCommand - concatenates and outputs files or input data
  *
- * This command reads from files specified as arguments or from the input channel
- * if no files are provided, and writes the content to the output channel.
+ * This command reads from files specified as arguments or from the input
+ * channel if no files are provided, and writes the content to the output
+ * channel.
  *
  * Examples:
  * - cat file.txt → outputs content of file.txt

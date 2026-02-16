@@ -1,6 +1,6 @@
 #include "executor/commands/exit.h"
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 
 namespace btft::interpreter::executor::commands {
 
@@ -14,7 +14,7 @@ ExecutionResult ExitCommand::Execute(
     if (!args.empty()) {
         try {
             exit_code = std::stoi(args[0]);
-        } catch (const std::exception& e) {
+        } catch (const std::exception &e) {
             exit_code = 0;
         }
     }

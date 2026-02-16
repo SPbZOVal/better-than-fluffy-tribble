@@ -7,7 +7,7 @@ namespace btft::interpreter::executor::commands {
 
 namespace {
 
-std::tuple<size_t, size_t, size_t> CountStats(const std::string& content) {
+std::tuple<size_t, size_t, size_t> CountStats(const std::string &content) {
     size_t lines = 0;
     size_t words = 0;
     size_t bytes = content.size();
@@ -33,7 +33,7 @@ std::tuple<size_t, size_t, size_t> CountStats(const std::string& content) {
     return {lines, words, bytes};
 }
 
-} // namespace
+}  // namespace
 
 ExecutionResult WcCommand::Execute(
     const std::vector<std::string> &args,
@@ -51,14 +51,15 @@ ExecutionResult WcCommand::Execute(
         }
 
         auto [lines, words, bytes] = CountStats(content);
-        outputChannel->write(std::to_string(lines) + " " +
-                            std::to_string(words) + " " +
-                            std::to_string(bytes) + "\n");
+        outputChannel->write(
+            std::to_string(lines) + " " + std::to_string(words) + " " +
+            std::to_string(bytes) + "\n"
+        );
 
         return ExecutionResult{};
     }
 
-    for (const auto& filename : args) {
+    for (const auto &filename : args) {
         std::ifstream file(filename);
         if (!file.is_open()) {
             return ExecutionResult{.exit_code = 1};
@@ -74,16 +75,17 @@ ExecutionResult WcCommand::Execute(
         total_words += words;
         total_bytes += bytes;
 
-        outputChannel->write(std::to_string(lines) + " " +
-                            std::to_string(words) + " " +
-                            std::to_string(bytes) + " " +
-                            filename + "\n");
+        outputChannel->write(
+            std::to_string(lines) + " " + std::to_string(words) + " " +
+            std::to_string(bytes) + " " + filename + "\n"
+        );
     }
 
     if (args.size() > 1) {
-        outputChannel->write(std::to_string(total_lines) + " " +
-                            std::to_string(total_words) + " " +
-                            std::to_string(total_bytes) + " total\n");
+        outputChannel->write(
+            std::to_string(total_lines) + " " + std::to_string(total_words) +
+            " " + std::to_string(total_bytes) + " total\n"
+        );
     }
 
     return ExecutionResult{};

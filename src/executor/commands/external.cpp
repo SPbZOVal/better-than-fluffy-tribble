@@ -1,8 +1,8 @@
 #include "executor/commands/external.h"
-#include <iostream>
-#include <cstdlib>
-#include <unistd.h>
 #include <sys/wait.h>
+#include <unistd.h>
+#include <cstdlib>
+#include <iostream>
 
 namespace btft::interpreter::executor::commands {
 
@@ -21,9 +21,9 @@ ExecutionResult ExternalCommand::Execute(
     }
 
     if (pid == 0) {
-        std::vector<char*> argv;
-        for (const auto& arg : args) {
-            argv.push_back(const_cast<char*>(arg.c_str()));
+        std::vector<char *> argv;
+        for (const auto &arg : args) {
+            argv.push_back(const_cast<char *>(arg.c_str()));
         }
         argv.push_back(nullptr);
         execvp(args[0].c_str(), argv.data());
