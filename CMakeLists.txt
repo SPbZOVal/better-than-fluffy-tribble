@@ -26,6 +26,7 @@ target_include_directories(${BTFT_TARGET} PRIVATE
 add_subdirectory(src)
 
 add_executable(${PROJECT_NAME}
+        src/main.cpp
         $<TARGET_OBJECTS:btft_obj>
 )
 
