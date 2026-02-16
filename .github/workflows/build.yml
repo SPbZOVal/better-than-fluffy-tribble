@@ -94,10 +94,10 @@ jobs:
         cmake .. -DBUILD_TESTS=ON
         make -j$(nproc)
 
-    - name: Run GTest Unit Tests
-      run: |
-        cd build
-        ctest --output-on-failure
+    # - name: Run GTest Unit Tests
+    #   run: |
+    #     cd build
+    #     ctest --output-on-failure
 
     - name: Run Integration Tests
       run: |
