@@ -43,6 +43,7 @@ static void SingleNodeExecution(
         );
         result = command->Execute(args, input_channel, output_channel);
     }
+
     output_channel->CloseChannel();
 
     // Update pipeline state if command failed or requested exit
