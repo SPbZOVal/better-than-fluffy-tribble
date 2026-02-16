@@ -3,7 +3,7 @@
 namespace btft::test {
 
 // MockInputChannel implementation
-void MockInputChannel::set_input_data(const std::vector<std::string>& data) {
+void MockInputChannel::set_input_data(const std::vector<std::string> &data) {
     std::lock_guard lock(mutex_);
     input_data_ = data;
     current_index_ = 0;
@@ -39,7 +39,7 @@ bool MockInputChannel::isClosed() const noexcept {
 }
 
 // MockOutputChannel implementation
-void MockOutputChannel::write(const std::string& buffer) {
+void MockOutputChannel::write(const std::string &buffer) {
     std::lock_guard lock(mutex_);
     output_data_ += buffer;
 }

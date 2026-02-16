@@ -1,8 +1,8 @@
 #pragma once
 
 #include <gtest/gtest.h>
-#include <thread>
 #include <chrono>
+#include <thread>
 #include "../include/executor/channel.h"
 
 namespace btft::test {

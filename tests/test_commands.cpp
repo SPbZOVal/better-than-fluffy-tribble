@@ -30,7 +30,8 @@ TEST_F(CatCommandTest, CatWithFileArgumentReadsFromFile) {
     file.close();
 
     // Act
-    auto result = cat_command->Execute({test_filename}, input_channel, output_channel);
+    auto result =
+        cat_command->Execute({test_filename}, input_channel, output_channel);
 
     // Assert
     EXPECT_EQ(result.exit_code, 0);
@@ -44,7 +45,9 @@ TEST_F(CatCommandTest, CatWithFileArgumentReadsFromFile) {
 
 TEST_F(CatCommandTest, CatWithNonExistentFileReturnsError) {
     // Act
-    auto result = cat_command->Execute({"nonexistent_file.txt"}, input_channel, output_channel);
+    auto result = cat_command->Execute(
+        {"nonexistent_file.txt"}, input_channel, output_channel
+    );
 
     // Assert
     EXPECT_EQ(result.exit_code, 1);
@@ -68,7 +71,9 @@ TEST_F(CatCommandTest, CatWithMultipleFilesConcatenatesContent) {
     file2.close();
 
     // Act
-    auto result = cat_command->Execute({filename1, filename2}, input_channel, output_channel);
+    auto result = cat_command->Execute(
+        {filename1, filename2}, input_channel, output_channel
+    );
 
     // Assert
     EXPECT_EQ(result.exit_code, 0);
@@ -93,7 +98,8 @@ TEST_F(EchoCommandTest, EchoWithNoArgumentsOutputsNewline) {
 
 TEST_F(EchoCommandTest, EchoWithSingleArgument) {
     // Act
-    auto result = echo_command->Execute({"hello"}, input_channel, output_channel);
+    auto result =
+        echo_command->Execute({"hello"}, input_channel, output_channel);
 
     // Assert
     EXPECT_EQ(result.exit_code, 0);
@@ -102,7 +108,9 @@ TEST_F(EchoCommandTest, EchoWithSingleArgument) {
 
 TEST_F(EchoCommandTest, EchoWithMultipleArguments) {
     // Act
-    auto result = echo_command->Execute({"hello", "world", "test"}, input_channel, output_channel);
+    auto result = echo_command->Execute(
+        {"hello", "world", "test"}, input_channel, output_channel
+    );
 
     // Assert
     EXPECT_EQ(result.exit_code, 0);
@@ -115,7 +123,8 @@ TEST_F(EchoCommandTest, EchoIgnoresInputChannel) {
     input_channel->set_input_data(input_data);
 
     // Act
-    auto result = echo_command->Execute({"test"}, input_channel, output_channel);
+    auto result =
+        echo_command->Execute({"test"}, input_channel, output_channel);
 
     // Assert
     EXPECT_EQ(result.exit_code, 0);
@@ -148,7 +157,8 @@ TEST_F(WcCommandTest, WcWithFileArgument) {
     file.close();
 
     // Act
-    auto result = wc_command->Execute({test_filename}, input_channel, output_channel);
+    auto result =
+        wc_command->Execute({test_filename}, input_channel, output_channel);
 
     // Assert
     EXPECT_EQ(result.exit_code, 0);
@@ -174,10 +184,13 @@ TEST_F(WcCommandTest, WcWithMultipleFiles) {
     file2.close();
 
     // Act
-    auto result = wc_command->Execute({filename1, filename2}, input_channel, output_channel);
+    auto result = wc_command->Execute(
+        {filename1, filename2}, input_channel, output_channel
+    );
 
     // Assert
-    std::string expected_output = "1 1 6 test_wc1.txt\n2 2 11 test_wc2.txt\n3 3 17 total\n";
+    std::string expected_output =
+        "1 1 6 test_wc1.txt\n2 2 11 test_wc2.txt\n3 3 17 total\n";
     EXPECT_EQ(result.exit_code, 0);
     EXPECT_EQ(output_channel->get_output(), expected_output);
 
@@ -188,7 +201,9 @@ TEST_F(WcCommandTest, WcWithMultipleFiles) {
 
 TEST_F(WcCommandTest, WcWithNonExistentFileReturnsError) {
     // Act
-    auto result = wc_command->Execute({"nonexistent_file.txt"}, input_channel, output_channel);
+    auto result = wc_command->Execute(
+        {"nonexistent_file.txt"}, input_channel, output_channel
+    );
 
     // Assert
     EXPECT_EQ(result.exit_code, 1);
@@ -212,7 +227,9 @@ TEST_F(PwdCommandTest, PwdOutputsCurrentDirectory) {
 
 TEST_F(PwdCommandTest, PwdIgnoresArguments) {
     // Act
-    auto result = pwd_command->Execute({"ignored", "arguments"}, input_channel, output_channel);
+    auto result = pwd_command->Execute(
+        {"ignored", "arguments"}, input_channel, output_channel
+    );
 
     // Assert
     EXPECT_EQ(result.exit_code, 0);
@@ -244,7 +261,8 @@ TEST_F(ExitCommandTest, ExitWithValidCode) {
 
 TEST_F(ExitCommandTest, ExitWithInvalidCodeDefaultsToZero) {
     // Act
-    auto result = exit_command->Execute({"invalid"}, input_channel, output_channel);
+    auto result =
+        exit_command->Execute({"invalid"}, input_channel, output_channel);
 
     // Assert
     EXPECT_EQ(result.exit_code, 0);

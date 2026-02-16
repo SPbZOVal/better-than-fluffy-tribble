@@ -1,9 +1,9 @@
 #pragma once
 
+#include <condition_variable>
+#include <mutex>
 #include <string>
 #include <vector>
-#include <mutex>
-#include <condition_variable>
 #include "../include/executor/channel.h"
 
 namespace btft::test {
@@ -19,7 +19,7 @@ public:
     MockInputChannel() = default;
 
     // Set the input data that will be returned by read()
-    void set_input_data(const std::vector<std::string>& data);
+    void set_input_data(const std::vector<std::string> &data);
 
     std::string read() override;
     void closeChannel() override;
@@ -41,7 +41,7 @@ class MockOutputChannel final : public interpreter::executor::IOutputChannel {
 public:
     MockOutputChannel() = default;
 
-    void write(const std::string& buffer) override;
+    void write(const std::string &buffer) override;
     void closeChannel() override;
 
     // Get the accumulated output data
