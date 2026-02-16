@@ -8,7 +8,7 @@ ExecutionResult EchoCommand::Execute(
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel
 ) {
-    for (size_t i = 0; i < args.size(); ++i) {
+    for (std::size_t i = 0; i < args.size(); ++i) {
         outputChannel->write(args[i]);
         if (i != args.size() - 1) {
             outputChannel->write(" ");

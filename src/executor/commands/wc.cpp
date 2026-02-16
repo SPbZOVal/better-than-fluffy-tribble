@@ -7,17 +7,19 @@ namespace btft::interpreter::executor::commands {
 
 namespace {
 
-std::tuple<size_t, size_t, size_t> CountStats(const std::string &content) {
-    size_t lines = 0;
-    size_t words = 0;
-    size_t bytes = content.size();
+std::tuple<std::size_t, std::size_t, std::size_t> CountStats(
+    const std::string &content
+) {
+    std::size_t lines = 0;
+    std::size_t words = 0;
+    std::size_t bytes = content.size();
 
     bool in_word = false;
     for (char c : content) {
         if (c == '\n') {
             lines++;
         }
-        if (std::isspace(c)) {
+        if (std::isspace(static_cast<int>(c))) {
             if (in_word) {
                 words++;
                 in_word = false;
@@ -40,9 +42,9 @@ ExecutionResult WcCommand::Execute(
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel
 ) {
-    size_t total_lines = 0;
-    size_t total_words = 0;
-    size_t total_bytes = 0;
+    std::size_t total_lines = 0;
+    std::size_t total_words = 0;
+    std::size_t total_bytes = 0;
 
     if (args.empty()) {
         std::string content;
@@ -50,7 +52,7 @@ ExecutionResult WcCommand::Execute(
             content += inputChannel->read();
         }
 
-        auto [lines, words, bytes] = CountStats(content);
+        const auto [lines, words, bytes] = CountStats(content);
         outputChannel->write(
             std::to_string(lines) + " " + std::to_string(words) + " " +
             std::to_string(bytes) + "\n"

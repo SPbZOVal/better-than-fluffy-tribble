@@ -7,6 +7,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include "../include/executor/executor.h"
 #include "../include/parser/antlr_parser.h"
 #include "../include/parser/preprocessor.h"
 #include "environment.h"
@@ -33,9 +34,12 @@ interpreter::ExecutionResult ShellRepl::process_line(std::string_view raw_input
         return res;
     }
 
-    [[maybe_unused]] const PipelineNode &pipeline = parsed.pipeline.value();
+    const PipelineNode &pipeline = parsed.pipeline.value();
 
-    // TODO
+    if (!pipeline.empty()) {
+        return interpreter::executor::ExecutePipeline(pipeline.get_commands());
+    }
+
     return ExecutionResult{};
 }
 

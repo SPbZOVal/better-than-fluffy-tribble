@@ -4,11 +4,8 @@
 
 namespace btft::interpreter::executor::commands {
 
-ExecutionResult ExitCommand::Execute(
-    const std::vector<std::string> &args,
-    std::shared_ptr<IInputChannel> inputChannel,
-    std::shared_ptr<IOutputChannel> outputChannel
-) {
+ExecutionResult ExitCommand::
+    Execute(const std::vector<std::string> &args, std::shared_ptr<IInputChannel>, std::shared_ptr<IOutputChannel>) {
     int exit_code = 0;
 
     if (!args.empty()) {

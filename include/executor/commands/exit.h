@@ -21,11 +21,9 @@ namespace btft::interpreter::executor::commands {
 class ExitCommand final : public ICommand {
 public:
     ExitCommand() = default;
-    ExecutionResult Execute(
-        const std::vector<std::string> &args,
-        std::shared_ptr<IInputChannel> inputChannel,
-        std::shared_ptr<IOutputChannel> outputChannel
-    ) override;
+    ExecutionResult
+    Execute(const std::vector<std::string> &args, std::shared_ptr<IInputChannel>, std::shared_ptr<IOutputChannel>)
+        override;
 
     static std::shared_ptr<ICommand> createCommand() {
         return std::make_shared<ExitCommand>();

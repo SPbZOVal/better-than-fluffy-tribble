@@ -11,7 +11,7 @@ template <char quote>
 [[nodiscard]] std::string unescape_quoted(std::string_view s) {
     std::string out;
     out.reserve(s.size());
-    for (size_t i = 0; i < s.size(); ++i) {
+    for (std::size_t i = 0; i < s.size(); ++i) {
         if (s.at(i) == '\\' && i + 1 < s.size()) {
             if (const char next = s.at(i + 1); next == quote) {
                 out.push_back(next);
