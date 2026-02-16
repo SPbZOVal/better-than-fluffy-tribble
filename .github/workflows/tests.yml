@@ -1,0 +1,44 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, release ]
+  pull_request:
+    branches: [ main, release ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake build-essential
+
+    - name: Configure and Build with Tests
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DBUILD_TESTS=ON
+        make -j$(nproc)
+
+    - name: Run GTest Unit Tests
+      run: |
+        cd build
+        ctest --output-on-failure
+
+    - name: Run Integration Tests
+      run: |
+        cd test/integration
+        ./run_all_tests.sh
+
+    - name: Upload test artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-outputs
+        path: test/integration/*.output

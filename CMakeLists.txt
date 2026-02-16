@@ -26,6 +26,7 @@ target_include_directories(${BTFT_TARGET} PRIVATE
 add_subdirectory(src)
 
 add_executable(${PROJECT_NAME}
+        src/main.cpp
         $<TARGET_OBJECTS:btft_obj>
 )
 
@@ -34,3 +35,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 btft_setup_antlr(${BTFT_TARGET})
+
+# Add tests if GoogleTest is available
+option(BUILD_TESTS "Build tests" ON)
+if(BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

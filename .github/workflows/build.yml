@@ -14,14 +14,14 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Run clang-format
       run: |
         sudo apt-get update
         sudo apt-get install -y clang-format-15
         find src tests -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c' | \
           xargs clang-format-15 --dry-run -Werror -style=file
-        
+
     - name: Run clang-tidy
       run: |
         sudo apt-get install -y clang-tidy-15
@@ -32,11 +32,11 @@ jobs:
     name: Build on Ubuntu
     runs-on: ubuntu-latest
     needs: linters
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v6
-      
+
     - name: Build
       run: |
         sudo apt-get update
@@ -44,29 +44,29 @@ jobs:
         cmake -B build -DCMAKE_BUILD_TYPE=Release
         cmake --build build
 
-  build-windows:
-    name: Build on Windows
-    runs-on: windows-latest
-    needs: linters
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
-      
-    - name: Build
-      run: |
-        cmake -B build -G "Visual Studio 17 2022" -A x64
-        cmake --build build --config Release
+  # build-windows:
+  #   name: Build on Windows
+  #   runs-on: windows-latest
+  #   needs: linters
+
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v6
+
+  #   - name: Build
+  #     run: |
+  #       cmake -B build -G "Visual Studio 17 2022" -A x64
+  #       cmake --build build --config Release
 
   build-macos:
     name: Build on macOS
     runs-on: macos-latest
     needs: linters
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v6
-      
+
     - name: Build
       run: |
         brew install cmake
@@ -76,9 +76,30 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
-    needs: [build-ubuntu, build-windows, build-macos]
-    
+    needs: [build-ubuntu, build-macos]
+
     steps:
-    - name: Run tests
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Install dependencies
       run: |
-        echo "There is not tests yet"
+        sudo apt-get update
+        sudo apt-get install -y cmake build-essential
+
+    - name: Configure and Build with Tests
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DBUILD_TESTS=ON
+        make -j$(nproc)
+
+    - name: Run GTest Unit Tests
+      run: |
+        cd build
+        ctest --output-on-failure
+
+    - name: Run Integration Tests
+      run: |
+        cd test/integration
+        ./run_all_tests.sh

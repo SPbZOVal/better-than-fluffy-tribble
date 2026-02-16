@@ -1,20 +1,16 @@
-#include "executor/commands/echo.h"
+#include "executor/commands/pwd.h"
+#include <filesystem>
 #include <iostream>
 
 namespace btft::interpreter::executor::commands {
 
-ExecutionResult EchoCommand::Execute(
+ExecutionResult PwdCommand::Execute(
     const std::vector<std::string> &args,
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel
 ) {
-    for (std::size_t i = 0; i < args.size(); ++i) {
-        outputChannel->write(args[i]);
-        if (i != args.size() - 1) {
-            outputChannel->write(" ");
-        }
-    }
-    outputChannel->write("\n");
+    std::filesystem::path cwd = std::filesystem::current_path();
+    outputChannel->write(cwd.string() + "\n");
 
     return ExecutionResult{};
 }

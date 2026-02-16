@@ -24,8 +24,10 @@ public:
 };
 
 template <typename T>
-concept DerivedFromICommand = std::derived_from<T, ICommand> && requires(T) {
-    { T::createCommand() } -> std::same_as<std::shared_ptr<ICommand>>;
-};
+concept DerivedFromICommand =
+    std::derived_from<T, ICommand> &&
+    requires(T) {
+        { T::createCommand() } -> std::same_as<std::shared_ptr<ICommand>>;
+    };
 
 }  // namespace btft::interpreter::executor::commands

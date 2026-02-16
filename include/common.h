@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -36,7 +37,7 @@ public:
         return commands.empty();
     }
 
-    [[nodiscard]] size_t size() const noexcept {
+    [[nodiscard]] std::size_t size() const noexcept {
         return commands.size();
     }
 

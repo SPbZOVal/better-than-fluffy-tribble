@@ -11,7 +11,7 @@ template <char quote>
 [[nodiscard]] std::string unescape_quoted(std::string_view s) {
     std::string out;
     out.reserve(s.size());
-    for (size_t i = 0; i < s.size(); ++i) {
+    for (std::size_t i = 0; i < s.size(); ++i) {
         if (s.at(i) == '\\' && i + 1 < s.size()) {
             if (const char next = s.at(i + 1); next == quote) {
                 out.push_back(next);
@@ -56,8 +56,8 @@ std::string decode_word_token(const antlr4::Token &token) {
     return text;
 }
 
-std::optional<std::size_t>
-ParserErrorListener::get_error_char_position() const noexcept {
+std::optional<std::size_t> ParserErrorListener::get_error_char_position(
+) const noexcept {
     return error_char_position;
 }
 
