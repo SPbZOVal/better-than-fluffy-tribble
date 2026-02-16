@@ -4,20 +4,20 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-namespace interpretator::executor::commands {
+namespace btft::interpreter::executor::commands {
 
-interpretator::ExecutionResult ExternalCommand::Execute(
+ExecutionResult ExternalCommand::Execute(
     const std::vector<std::string> &args,
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel
 ) {
     if (args.empty()) {
-        return interpretator::ExecutionResult{.returnCode = 1, .shouldExit = false};
+        return ExecutionResult{.exit_code = 1, .should_exit = false};
     }
 
     pid_t pid = fork();
     if (pid == -1) {
-        return interpretator::ExecutionResult{.returnCode = 1, .shouldExit = false};
+        return ExecutionResult{.exit_code = 1, .should_exit = false};
     }
 
     if (pid == 0) {
@@ -32,17 +32,17 @@ interpretator::ExecutionResult ExternalCommand::Execute(
         int status;
         waitpid(pid, &status, 0);
 
-        interpretator::ExecutionResult result;
-        result.shouldExit = false;
+        ExecutionResult result;
+        result.should_exit = false;
 
         if (WIFEXITED(status)) {
-            result.returnCode = WEXITSTATUS(status);
+            result.exit_code = WEXITSTATUS(status);
         } else {
-            result.returnCode = 1;
+            result.exit_code = 1;
         }
 
         return result;
     }
 }
 
-}  // namespace interpretator::executor::commands
+}  // namespace btft::interpreter::executor::commands

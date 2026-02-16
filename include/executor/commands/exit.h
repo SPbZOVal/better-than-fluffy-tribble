@@ -2,7 +2,7 @@
 
 #include "icommand.h"
 
-namespace interpretator::executor::commands {
+namespace btft::interpreter::executor::commands {
 
 /**
  * ExitCommand - terminates the interpreter
@@ -21,7 +21,7 @@ namespace interpretator::executor::commands {
 class ExitCommand final : public ICommand {
 public:
     ExitCommand() = default;
-    interpretator::ExecutionResult Execute(
+    ExecutionResult Execute(
         const std::vector<std::string> &args,
         std::shared_ptr<IInputChannel> inputChannel,
         std::shared_ptr<IOutputChannel> outputChannel
@@ -32,4 +32,4 @@ public:
     }
 };
 
-}  // namespace interpretator::executor::commands
+}  // namespace btft::interpreter::executor::commands

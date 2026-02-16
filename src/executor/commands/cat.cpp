@@ -2,9 +2,9 @@
 #include <fstream>
 #include <iostream>
 
-namespace interpretator::executor::commands {
+namespace btft::interpreter::executor::commands {
 
-interpretator::ExecutionResult CatCommand::Execute(
+ExecutionResult CatCommand::Execute(
     const std::vector<std::string> &args,
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel
@@ -13,13 +13,13 @@ interpretator::ExecutionResult CatCommand::Execute(
         while (!inputChannel->isClosed()) {
             outputChannel->write(inputChannel->read());
         }
-        return interpretator::ExecutionResult{.returnCode = 0};
+        return ExecutionResult{};
     }
 
     for (const auto& filename : args) {
         std::ifstream file(filename);
         if (!file.is_open()) {
-            return interpretator::ExecutionResult{.returnCode = 1};
+            return ExecutionResult{.exit_code = 1};
         }
 
         std::string line;
@@ -29,7 +29,7 @@ interpretator::ExecutionResult CatCommand::Execute(
         file.close();
     }
 
-    return interpretator::ExecutionResult{.returnCode = 0};
+    return ExecutionResult{};
 }
 
-}  // namespace interpretator::executor::commands
+}  // namespace btft::interpreter::executor::commands

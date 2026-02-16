@@ -2,7 +2,7 @@
 
 #include "icommand.h"
 
-namespace interpretator::executor::commands {
+namespace btft::interpreter::executor::commands {
 
 /**
  * ExternalCommand - executes external system programs
@@ -21,7 +21,7 @@ namespace interpretator::executor::commands {
 class ExternalCommand final : public ICommand {
 public:
     ExternalCommand() = default;
-    interpretator::ExecutionResult Execute(
+    ExecutionResult Execute(
         const std::vector<std::string> &args,
         std::shared_ptr<IInputChannel> inputChannel,
         std::shared_ptr<IOutputChannel> outputChannel
@@ -32,4 +32,4 @@ public:
     }
 };
 
-}  // namespace interpretator::executor::commands
+}  // namespace btft::interpreter::executor::commands

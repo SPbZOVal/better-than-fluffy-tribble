@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace interpretator::executor::commands {
+namespace btft::interpreter::executor::commands {
 
 namespace {
 
@@ -35,7 +35,7 @@ std::tuple<size_t, size_t, size_t> CountStats(const std::string& content) {
 
 } // namespace
 
-interpretator::ExecutionResult WcCommand::Execute(
+ExecutionResult WcCommand::Execute(
     const std::vector<std::string> &args,
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel
@@ -55,13 +55,13 @@ interpretator::ExecutionResult WcCommand::Execute(
                             std::to_string(words) + " " +
                             std::to_string(bytes) + "\n");
 
-        return interpretator::ExecutionResult{.returnCode = 0};
+        return ExecutionResult{};
     }
 
     for (const auto& filename : args) {
         std::ifstream file(filename);
         if (!file.is_open()) {
-            return interpretator::ExecutionResult{.returnCode = 1};
+            return ExecutionResult{.exit_code = 1};
         }
 
         std::stringstream buffer;
@@ -86,7 +86,7 @@ interpretator::ExecutionResult WcCommand::Execute(
                             std::to_string(total_bytes) + " total\n");
     }
 
-    return interpretator::ExecutionResult{.returnCode = 0};
+    return ExecutionResult{};
 }
 
-}  // namespace interpretator::executor::commands
+}  // namespace btft::interpreter::executor::commands

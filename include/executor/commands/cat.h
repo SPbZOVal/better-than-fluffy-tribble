@@ -2,7 +2,7 @@
 
 #include "icommand.h"
 
-namespace interpretator::executor::commands {
+namespace btft::interpreter::executor::commands {
 
 /**
  * CatCommand - concatenates and outputs files or input data
@@ -22,7 +22,7 @@ namespace interpretator::executor::commands {
 class CatCommand final : public ICommand {
 public:
     CatCommand() = default;
-    interpretator::ExecutionResult Execute(
+    ExecutionResult Execute(
         const std::vector<std::string> &args,
         std::shared_ptr<IInputChannel> inputChannel,
         std::shared_ptr<IOutputChannel> outputChannel
@@ -33,4 +33,4 @@ public:
     }
 };
 
-}  // namespace interpretator::executor::commands
+}  // namespace btft::interpreter::executor::commands

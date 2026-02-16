@@ -2,7 +2,7 @@
 
 #include "icommand.h"
 
-namespace interpretator::executor::commands {
+namespace btft::interpreter::executor::commands {
 
 /**
  * PwdCommand - prints the current working directory
@@ -20,7 +20,7 @@ namespace interpretator::executor::commands {
 class PwdCommand final : public ICommand {
 public:
     PwdCommand() = default;
-    interpretator::ExecutionResult Execute(
+    ExecutionResult Execute(
         const std::vector<std::string> &args,
         std::shared_ptr<IInputChannel> inputChannel,
         std::shared_ptr<IOutputChannel> outputChannel
@@ -31,4 +31,4 @@ public:
     }
 };
 
-}  // namespace interpretator::executor::commands
+}  // namespace btft::interpreter::executor::commands

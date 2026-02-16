@@ -2,9 +2,9 @@
 #include <iostream>
 #include <cstdlib>
 
-namespace interpretator::executor::commands {
+namespace btft::interpreter::executor::commands {
 
-interpretator::ExecutionResult ExitCommand::Execute(
+ExecutionResult ExitCommand::Execute(
     const std::vector<std::string> &args,
     std::shared_ptr<IInputChannel> inputChannel,
     std::shared_ptr<IOutputChannel> outputChannel
@@ -19,11 +19,11 @@ interpretator::ExecutionResult ExitCommand::Execute(
         }
     }
 
-    interpretator::ExecutionResult result;
-    result.returnCode = exit_code;
-    result.shouldExit = true;
+    ExecutionResult result;
+    result.exit_code = exit_code;
+    result.should_exit = true;
 
     return result;
 }
 
-}  // namespace interpretator::executor::commands
+}  // namespace btft::interpreter::executor::commands
