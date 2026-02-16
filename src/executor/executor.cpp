@@ -28,10 +28,21 @@ static void SingleNodeExecution(
         return;
     }
 
+    ExecutionResult result{};
     const auto command =
         CommandsRegistry::GetInstance().GetCommand(node.GetName());
-    const ExecutionResult result =
-        command->Execute(node.GetArgs(), input_channel, output_channel);
+    if (dynamic_cast<commands::ExternalCommand *>(command.get()) == nullptr) {
+        result =
+            command->Execute(node.GetArgs(), input_channel, output_channel);
+    } else {
+        std::vector args{node.GetName()};
+        const auto &external_command_args = node.GetArgs();
+        args.insert(
+            args.end(), external_command_args.begin(),
+            external_command_args.end()
+        );
+        result = command->Execute(args, input_channel, output_channel);
+    }
     output_channel->CloseChannel();
 
     // Update pipeline state if command failed or requested exit
