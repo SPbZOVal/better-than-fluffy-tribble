@@ -79,6 +79,36 @@ jobs:
     needs: [build-ubuntu, build-macos]
 
     steps:
-    - name: Run tests
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Install dependencies
       run: |
-        echo "There is not tests yet"
+        sudo apt-get update
+        sudo apt-get install -y cmake build-essential libgtest-dev
+
+    - name: Build and Install GTest
+      run: |
+        cd /usr/src/gtest
+        sudo cmake .
+        sudo make
+        sudo cp lib/*.a /usr/lib
+        sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a
+        sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
+
+    - name: Configure and Build with Tests
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DBUILD_TESTS=ON
+        make -j$(nproc)
+
+    - name: Run GTest Unit Tests
+      run: |
+        cd build
+        ctest --output-on-failure
+
+    - name: Run Integration Tests
+      run: |
+        cd test/integration
+        ./run_all_tests.sh
