@@ -29,7 +29,7 @@ void Channel::CloseChannel() {
     condVar.notify_all();
 }
 
-bool Channel::IsClosed() const noexcept {
+bool Channel::IsClosed() const {
     std::unique_lock mutex_closed(mutex);
     return closed;
 }
@@ -41,7 +41,7 @@ std::string InputStdChannel::Read() {
     return result;
 }
 
-bool InputStdChannel::IsClosed() const noexcept {
+bool InputStdChannel::IsClosed() const {
     return std::cin.eof();
 }
 

@@ -16,6 +16,7 @@ public:
     void SetLocal(const std::string &name, const std::string &value);
     std::optional<std::string> GetLocal(const std::string &name) const;
     bool HasLocal(const std::string &name) const;
+    void ClearLocal();
 
     void SetGlobal(const std::string &name, const std::string &value);
     std::optional<std::string> GetGlobal(const std::string &name) const;

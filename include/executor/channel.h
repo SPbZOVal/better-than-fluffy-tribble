@@ -18,7 +18,7 @@ public:
     virtual ~IInputChannel() = default;
 
     virtual std::string Read() = 0;
-    virtual bool IsClosed() const noexcept = 0;
+    virtual bool IsClosed() const = 0;
 };
 
 class IOutputChannel : public IChannel {
@@ -32,7 +32,7 @@ class InputStdChannel final : public IInputChannel {
 public:
     std::string Read() override;
     void CloseChannel() override;
-    bool IsClosed() const noexcept override;
+    bool IsClosed() const override;
 };
 
 class OutputStdChannel final : public IOutputChannel {
@@ -46,7 +46,7 @@ public:
     void Write(const std::string &buffer) override;
     std::string Read() override;
     void CloseChannel() override;
-    bool IsClosed() const noexcept override;
+    bool IsClosed() const override;
 
 private:
     mutable std::mutex mutex;

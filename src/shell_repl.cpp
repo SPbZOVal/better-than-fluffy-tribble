@@ -7,40 +7,42 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include "environment.h"
 #include "executor/executor.h"
 #include "parser/antlr_parser.h"
-#include "parser/preprocessor.h"
-#include "environment.h"
 
 namespace btft {
 
 ShellRepl::ShellRepl()
-    : parser(std::make_unique<parser::AntlrParser>()),
-      preprocessor(std::make_unique<parser::Preprocessor>()) {
+    : parser(std::make_unique<parser::AntlrParser>()){
 }
 
 interpreter::ExecutionResult ShellRepl::ProcessLine(
-    std::string_view raw_input
+    std::string_view input
 ) const {
     using interpreter::ExecutionResult;
     using interpreter::PipelineNode;
 
-    const std::string input = preprocessor->Preprocess(raw_input);
+    auto &env = Environment::GetInstance();
+    env.ClearLocal();
 
     const parser::ParseResult parsed = parser->Parse(input);
     if (!parsed.IsOk()) {
+        env.ClearLocal();
         ExecutionResult res;
         res.exit_code = 1;
         res.error_message = parsed.error_message;
         return res;
     }
 
+    ExecutionResult result{};
     if (const PipelineNode &pipeline = parsed.pipeline.value();
         !pipeline.Empty()) {
-        return interpreter::executor::ExecutePipeline(pipeline.GetCommands());
+        result = interpreter::executor::ExecutePipeline(pipeline.GetCommands());
     }
 
-    return ExecutionResult{};
+    env.ClearLocal();
+    return result;
 }
 
 int ShellRepl::Run() const {
