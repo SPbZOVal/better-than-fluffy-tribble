@@ -26,6 +26,7 @@ TESTS=(
     "env_test"
     "external_env_test"
     "unknown_command_test"
+    "grep_file"
 )
 
 PASSED=0

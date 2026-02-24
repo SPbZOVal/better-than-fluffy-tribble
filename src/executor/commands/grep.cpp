@@ -59,7 +59,7 @@ std::regex PrepareRegex(const GrepArguments &arguments) {
     }
 
     std::regex::flag_type flags = std::regex::ECMAScript;
-    if (!arguments.is_case_sensitive) {
+    if (arguments.is_case_sensitive) {
         flags |= std::regex::icase;
     }
 
@@ -125,8 +125,7 @@ ExecutionResult GrepCommand::Execute(
                 ++current_after_context;
                 if (current_after_context > arguments.after_context) {
                     return ExecutionResult{
-                        .exit_code = 0, .should_exit = 0, .error_message = ""
-                    };
+                        .exit_code = 0, .should_exit = 0, .error_message = ""};
                 }
             }
         }
@@ -136,8 +135,7 @@ ExecutionResult GrepCommand::Execute(
         return ExecutionResult{
             .exit_code = 1,
             .should_exit = 1,
-            .error_message = "Files are not exists"
-        };
+            .error_message = "Files are not exists"};
     }
 
     return ExecutionResult{};
