@@ -13,12 +13,10 @@
 
 namespace btft {
 
-ShellRepl::ShellRepl()
-    : parser(std::make_unique<parser::AntlrParser>()){
+ShellRepl::ShellRepl() : parser(std::make_unique<parser::AntlrParser>()) {
 }
 
-interpreter::ExecutionResult ShellRepl::ProcessLine(
-    std::string_view input
+interpreter::ExecutionResult ShellRepl::ProcessLine(std::string_view input
 ) const {
     using interpreter::ExecutionResult;
     using interpreter::PipelineNode;

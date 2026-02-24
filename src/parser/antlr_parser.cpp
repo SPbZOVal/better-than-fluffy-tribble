@@ -129,8 +129,7 @@ private:
 
         if (t->getType() == ShellLexer::SQ_STRING) {
             return interpreter::ArgSegment{
-                .text = text, .allow_expansion = false
-            };
+                .text = text, .allow_expansion = false};
         }
 
         return interpreter::ArgSegment{.text = text, .allow_expansion = true};
