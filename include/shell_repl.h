@@ -3,12 +3,10 @@
 #include <algorithm>
 #include <iostream>
 #include <memory>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include "common.h"
 #include "parser/iparser.h"
-#include "parser/preprocessor.h"
 
 namespace btft {
 
@@ -33,7 +31,6 @@ private:
     ) const;
 
     std::unique_ptr<parser::IParser> parser;
-    std::unique_ptr<parser::Preprocessor> preprocessor;
     static constexpr std::string_view kPromptPrefix = ">";
 };
 

@@ -7,6 +7,7 @@
 #include "ShellParser.h"
 
 // Other
+#include <environment.h>
 #include <any>
 #include <string>
 #include <string_view>
@@ -37,38 +38,74 @@ private:
         using interpreter::CommandNode;
         using interpreter::PipelineNode;
 
+        const bool has_commands = ctx->pipe() != nullptr;
+
+        if (!ctx->assignment().empty()) {
+            const bool make_global = !has_commands;
+            ApplyAssignments(ctx->assignment(), make_global);
+        }
+
         PipelineNode pipeline;
-
-        std::vector<std::string> assigns;
-        assigns.reserve(ctx->assignment().size());
-
-        for (ShellParser::AssignmentContext *a : ctx->assignment()) {
-            assigns.push_back(ParseAssignment(a));
-        }
-
-        if (!assigns.empty()) {
-            pipeline.AddCommand(
-                CommandNode(std::string(kAssignCommandName), std::move(assigns))
-            );
-        }
-
-        if (ctx->pipe() != nullptr) {
-            for (auto &&cmd : ParsePipe(ctx->pipe())) {
-                pipeline.AddCommand(std::move(cmd));
+        if (has_commands) {
+            for (const auto &cmd : ParsePipe(ctx->pipe())) {
+                pipeline.AddCommand(cmd);
             }
         }
 
         return pipeline;
     }
 
-    static std::string ParseAssignment(ShellParser::AssignmentContext *ctx) {
-        const std::string name = ctx->NAME()->getText();
+    static void ApplyAssignments(
+        const std::vector<ShellParser::AssignmentContext *> &assignments,
+        bool make_global
+    ) {
+        auto &env = Environment::GetInstance();
 
-        const ShellParser::WordContext *word_ctx = ctx->value()->word();
-        const antlr4::Token *t = word_ctx->getStart();
-        const std::string value = DecodeWordToken(*t);
+        for (ShellParser::AssignmentContext *a : assignments) {
+            const std::string name = a->NAME()->getText();
+            const auto [text, allow_expansion] =
+                MakeSegmentFromWord(a->value()->word());
 
-        return name + "=" + value;
+            const std::string value =
+                allow_expansion ? ExpandVars(text, env) : text;
+
+            if (make_global) {
+                env.SetGlobal(name, value);
+            } else {
+                env.SetLocal(name, value);
+            }
+        }
+    }
+
+    static std::string ExpandVars(std::string_view s, const Environment &env) {
+        std::string out;
+        out.reserve(s.size());
+
+        for (std::size_t i = 0; i < s.size(); ++i) {
+            if (const char c = s[i]; c != '$') {
+                out.push_back(c);
+                continue;
+            }
+
+            if (i + 1 >= s.size() || !interpreter::IsVarStart(s[i + 1])) {
+                out.push_back('$');
+                continue;
+            }
+
+            std::size_t j = i + 1;
+            while (j < s.size() && interpreter::IsVarChar(s[j])) {
+                ++j;
+            }
+
+            const std::string name(s.substr(i + 1, j - (i + 1)));
+            if (const auto val = env.GetVar(name); val.has_value()) {
+                out += *val;
+            }
+
+            i = j - 1;
+        }
+
+        return out;
     }
 
     static std::vector<interpreter::CommandNode> ParsePipe(
@@ -78,32 +115,64 @@ private:
         out.reserve(ctx->command().size());
 
         for (ShellParser::CommandContext *c : ctx->command()) {
-            out.push_back(ParseCommand(c));
+            out.emplace_back(ParseCommand(c));
         }
 
         return out;
     }
 
+    static interpreter::ArgSegment MakeSegmentFromWord(
+        const ShellParser::WordContext *word_ctx
+    ) {
+        const antlr4::Token *t = word_ctx->getStart();
+        const std::string text = DecodeWordToken(*t);
+
+        if (t->getType() == ShellLexer::SQ_STRING) {
+            return interpreter::ArgSegment{
+                .text = text, .allow_expansion = false};
+        }
+
+        return interpreter::ArgSegment{.text = text, .allow_expansion = true};
+    }
+
     static interpreter::CommandNode ParseCommand(
         ShellParser::CommandContext *ctx
     ) {
-        using interpreter::CommandNode;
+        const auto &ws = ctx->word();
+        std::vector<interpreter::ArgToken> glued_args;
+        glued_args.reserve(ws.size());
 
-        std::vector<std::string> words;
-        words.reserve(ctx->word().size());
+        interpreter::ArgToken current;
+        const antlr4::Token *prev_stop = nullptr;
 
-        for (const ShellParser::WordContext *w : ctx->word()) {
-            const antlr4::Token *t = w->getStart();
-            words.push_back(DecodeWordToken(*t));
+        for (const auto *w : ws) {
+            const antlr4::Token *start = w->getStart();
+            const antlr4::Token *stop = w->getStop();
+
+            const bool adjacent =
+                (prev_stop != nullptr) &&
+                (prev_stop->getStopIndex() + 1 == start->getStartIndex());
+
+            if (!adjacent) {
+                if (!current.Empty()) {
+                    glued_args.push_back(std::move(current));
+                    current = interpreter::ArgToken{};
+                }
+            }
+
+            current.segments.push_back(MakeSegmentFromWord(w));
+            prev_stop = stop;
         }
 
-        std::string name = std::move(words.front());
-        words.erase(words.begin());
+        if (!current.Empty()) {
+            glued_args.push_back(std::move(current));
+        }
 
-        return {std::move(name), std::move(words)};
+        interpreter::ArgToken name = std::move(glued_args.front());
+        glued_args.erase(glued_args.begin());
+
+        return {std::move(name), std::move(glued_args)};
     }
-
-    static constexpr std::string_view kAssignCommandName = "__assign__";
 };
 
 }  // namespace

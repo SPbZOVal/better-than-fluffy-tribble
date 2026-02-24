@@ -14,7 +14,7 @@ assignment
   : NAME '=' value
   ;
 
- pipe
+pipe
   : command ('|' command)*
   ;
 
@@ -28,7 +28,6 @@ value
 
 word
   : WORD
-  // otherwise it matches word as NAME and expects `=`
   | NAME
   | SQ_STRING
   | DQ_STRING
@@ -51,7 +50,7 @@ WORD
   ;
 
 fragment WORD_CHAR
-  : ~[ \t\f\r\n'"]
+  : ~[ \t\f\r\n'"=|]
   ;
 
 WS

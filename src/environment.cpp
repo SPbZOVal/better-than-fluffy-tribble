@@ -44,9 +44,11 @@ bool Environment::HasVar(const std::string &name) const {
 std::optional<std::string> Environment::GetVar(const std::string &name) const {
     if (const auto local_var = GetLocal(name); local_var) {
         return local_var;
-    } else {
-        return GetGlobal(name);
     }
+    return GetGlobal(name);
 }
 
+void Environment::ClearLocal() {
+    local_vars.clear();
+}
 }  // namespace btft
