@@ -9,14 +9,16 @@
 
 namespace btft::interpreter::executor {
 
+namespace {
+
 struct PipelineState {
     std::atomic<bool> should_stop{false};
     std::atomic<int> exit_code{0};
     std::atomic<bool> should_exit{false};
-    std::mutex mutex;
+    // std::mutex mutex;
 };
 
-static void SingleNodeExecution(
+void SingleNodeExecution(
     std::shared_ptr<IInputChannel> input_channel,
     std::shared_ptr<IOutputChannel> output_channel,
     const CommandNode &node,
@@ -57,6 +59,8 @@ static void SingleNodeExecution(
     }
 }
 
+}
+
 ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes) {
     std::vector<std::thread> pipeline;
     auto state = std::make_shared<PipelineState>();
@@ -82,9 +86,11 @@ ExecutionResult ExecutePipeline(const std::vector<CommandNode> &nodes) {
     output_channels.back() = std::make_shared<OutputStdChannel>();
 
     for (std::size_t i = 0; i < nodes.size(); ++i) {
-        pipeline.push_back(std::thread{
-            SingleNodeExecution, input_channels[i], output_channels[i],
-            std::cref(nodes[i]), state});
+        pipeline.emplace_back(
+                SingleNodeExecution, input_channels[i], output_channels[i],
+                std::cref(nodes[i]), state
+
+        );
     }
 
     for (auto &thread : pipeline) {
