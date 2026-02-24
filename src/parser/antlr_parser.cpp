@@ -136,19 +136,6 @@ private:
         return interpreter::ArgSegment{.text = text, .allow_expansion = true};
     }
 
-    static std::vector<interpreter::CommandNode> ParsePipe(
-        ShellParser::PipeContext *ctx
-    ) {
-        std::vector<interpreter::CommandNode> out;
-        out.reserve(ctx->command().size());
-
-        for (ShellParser::CommandContext *c : ctx->command()) {
-            out.push_back(ParseCommand(c));
-        }
-
-        return out;
-    }
-
     static interpreter::CommandNode ParseCommand(
         ShellParser::CommandContext *ctx
     ) {
