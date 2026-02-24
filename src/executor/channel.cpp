@@ -30,6 +30,7 @@ void Channel::CloseChannel() {
 }
 
 bool Channel::IsClosed() const noexcept {
+    std::unique_lock mutex_closed(mutex);
     return closed;
 }
 

@@ -7,9 +7,9 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include "../include/executor/executor.h"
-#include "../include/parser/antlr_parser.h"
-#include "../include/parser/preprocessor.h"
+#include "executor/executor.h"
+#include "parser/antlr_parser.h"
+#include "parser/preprocessor.h"
 #include "environment.h"
 
 namespace btft {
@@ -19,7 +19,8 @@ ShellRepl::ShellRepl()
       preprocessor(std::make_unique<parser::Preprocessor>()) {
 }
 
-interpreter::ExecutionResult ShellRepl::ProcessLine(std::string_view raw_input
+interpreter::ExecutionResult ShellRepl::ProcessLine(
+    std::string_view raw_input
 ) const {
     using interpreter::ExecutionResult;
     using interpreter::PipelineNode;
@@ -34,9 +35,8 @@ interpreter::ExecutionResult ShellRepl::ProcessLine(std::string_view raw_input
         return res;
     }
 
-    const PipelineNode &pipeline = parsed.pipeline.value();
-
-    if (!pipeline.Empty()) {
+    if (const PipelineNode &pipeline = parsed.pipeline.value();
+        !pipeline.Empty()) {
         return interpreter::executor::ExecutePipeline(pipeline.GetCommands());
     }
 
@@ -65,8 +65,8 @@ int ShellRepl::Run() const {
             std::cout << std::flush;
         }
     }
-    std::cout << std::endl;
 
+    std::cout << '\n' << std::flush;
     return execution_result.exit_code;
 }
 

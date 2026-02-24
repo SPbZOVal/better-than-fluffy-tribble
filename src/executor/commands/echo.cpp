@@ -1,5 +1,4 @@
 #include "executor/commands/echo.h"
-#include <iostream>
 
 namespace btft::interpreter::executor::commands {
 

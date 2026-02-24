@@ -27,8 +27,4 @@ private:
 
 [[nodiscard]] std::string DecodeWordToken(const antlr4::Token &token);
 
-[[nodiscard]] std::vector<std::string> CollectWords(
-    antlr4::CommonTokenStream &tokens
-);
-
 }  // namespace btft::parser

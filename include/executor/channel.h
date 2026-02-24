@@ -49,7 +49,7 @@ public:
     bool IsClosed() const noexcept override;
 
 private:
-    std::mutex mutex;
+    mutable std::mutex mutex;
     std::condition_variable condVar;
     std::stringstream readBuffer;
     bool closed = false;

@@ -52,8 +52,10 @@ private:
             );
         }
 
-        if (ctx->command() != nullptr) {
-            pipeline.AddCommand(ParseCommand(ctx->command()));
+        if (ctx->pipe() != nullptr) {
+            for (auto &&cmd : ParsePipe(ctx->pipe())) {
+                pipeline.AddCommand(std::move(cmd));
+            }
         }
 
         return pipeline;
@@ -69,10 +71,24 @@ private:
         return name + "=" + value;
     }
 
+    static std::vector<interpreter::CommandNode> ParsePipe(
+        ShellParser::PipeContext *ctx
+    ) {
+        std::vector<interpreter::CommandNode> out;
+        out.reserve(ctx->command().size());
+
+        for (ShellParser::CommandContext *c : ctx->command()) {
+            out.push_back(ParseCommand(c));
+        }
+
+        return out;
+    }
+
     static interpreter::CommandNode ParseCommand(
         ShellParser::CommandContext *ctx
     ) {
         using interpreter::CommandNode;
+
         std::vector<std::string> words;
         words.reserve(ctx->word().size());
 

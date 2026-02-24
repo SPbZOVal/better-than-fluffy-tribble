@@ -72,23 +72,4 @@ void ParserErrorListener::syntaxError(
     error_char_position = char_position_in_line;
 }
 
-std::vector<std::string> CollectWords(antlr4::CommonTokenStream &tokens) {
-    std::vector<std::string> out;
-    tokens.fill();
-
-    for (const antlr4::Token *t : tokens.getTokens()) {
-        if (t == nullptr) {
-            continue;
-        }
-
-        if (const std::size_t type = t->getType();
-            type == ShellLexer::WORD || type == ShellLexer::SQ_STRING ||
-            type == ShellLexer::DQ_STRING) {
-            out.push_back(DecodeWordToken(*t));
-        }
-    }
-
-    return out;
-}
-
 }  // namespace btft::parser

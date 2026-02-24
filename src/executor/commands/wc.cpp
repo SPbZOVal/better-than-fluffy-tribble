@@ -48,8 +48,12 @@ ExecutionResult WcCommand::Execute(
 
     if (args.empty()) {
         std::string content;
-        while (!inputChannel->IsClosed()) {
-            content += inputChannel->Read();
+        while (true) {
+            const std::string chunk = inputChannel->Read();
+            if (chunk.empty() && inputChannel->IsClosed()) {
+                break;
+            }
+            content += chunk;
         }
 
         const auto [lines, words, bytes] = CountStats(content);

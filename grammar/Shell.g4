@@ -6,12 +6,16 @@ line
   ;
 
 stmt
-  : assignment+ command?
-  | command
+  : assignment+ pipe?
+  | pipe
   ;
 
 assignment
   : NAME '=' value
+  ;
+
+ pipe
+  : command ('|' command)*
   ;
 
 command
