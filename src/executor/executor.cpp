@@ -80,10 +80,10 @@ ExpandedCommand ExpandCommandNode(const CommandNode &node) {
 }
 
 void SingleNodeExecution(
-    std::shared_ptr<IInputChannel> input_channel,
-    std::shared_ptr<IOutputChannel> output_channel,
+    const std::shared_ptr<IInputChannel> &input_channel,
+    const std::shared_ptr<IOutputChannel> &output_channel,
     const CommandNode &node,
-    std::shared_ptr<PipelineState> state
+    const std::shared_ptr<PipelineState> &state
 ) {
     // Check if pipeline should stop before executing
     if (state->should_stop.load()) {

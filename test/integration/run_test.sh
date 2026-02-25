@@ -18,6 +18,15 @@ TEST_INPUT_FILE="$TEST_DIR/${TEST_NAME}.input"
 TEST_EXPECTED_FILE="$TEST_DIR/${TEST_NAME}.expected"
 TEST_OUTPUT_FILE="$TEST_DIR/${TEST_NAME}.output"
 
+# For pwd test, we need to run from the test directory and generate expected output
+if [ "$TEST_NAME" = "pwd_test" ]; then
+    cd "$TEST_DIR"
+    # Generate expected output with actual pwd
+    ACTUAL_PWD=$(pwd)
+    echo ">${ACTUAL_PWD}" > "$TEST_EXPECTED_FILE"
+    echo ">" >> "$TEST_EXPECTED_FILE"
+fi
+
 if [ ! -f "$TEST_INPUT_FILE" ]; then
     echo "Error: Test input file $TEST_INPUT_FILE not found"
     exit 1
@@ -35,15 +44,6 @@ if [ ! -f "$BTFT_EXEC" ]; then
 fi
 
 echo "Running test: $TEST_NAME"
-
-# For pwd test, we need to run from the test directory and generate expected output
-if [ "$TEST_NAME" = "pwd_test" ]; then
-    cd "$TEST_DIR"
-    # Generate expected output with actual pwd
-    ACTUAL_PWD=$(pwd)
-    echo ">${ACTUAL_PWD}" > "$TEST_EXPECTED_FILE"
-    echo ">" >> "$TEST_EXPECTED_FILE"
-fi
 
 # Run the test by feeding input to btft and capturing output
 "$BTFT_EXEC" < "$TEST_INPUT_FILE" > "$TEST_OUTPUT_FILE" 2>&1
