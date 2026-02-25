@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  linters:
+    name: Linters
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-format-15 clang-tidy-15 build-essential cmake default-jre
+
+    - name: Configure project
+      run: cmake -B build
+
+    - name: Run clang-format check
+      run: cmake --build build --target format-check
+
+    - name: Run clang-tidy
+      run: cmake --build build --target tidy
+
+  build-ubuntu:
+    name: Build on Ubuntu
+    runs-on: ubuntu-latest
+    needs: linters
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake default-jre
+
+    - name: Build
+      run: |
+        cmake -B build -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release
+        cmake --build build
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-ubuntu
+        path: |
+          build/
+          test/
+        retention-days: 1
+
+  # build-windows:
+  #   name: Build on Windows
+  #   runs-on: windows-latest
+  #   needs: linters
+
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v6
+
+  #   - name: Build
+  #     run: |
+  #       cmake -B build -G "Visual Studio 17 2022" -A x64
+  #       cmake --build build --config Release
+
+  build-macos:
+    name: Build on macOS
+    runs-on: macos-latest
+    needs: linters
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Build
+      run: |
+        brew install cmake
+        cmake -B build -DCMAKE_BUILD_TYPE=Release
+        cmake --build build
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: build-ubuntu
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-ubuntu
+
+    - name: Install runtime dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y default-jre
+
+    - name: Make binaries executable
+      run: chmod +x build/btft
+
+    # - name: Run GTest Unit Tests
+    #   run: |
+    #     cd build
+    #     ctest --output-on-failure
+
+    - name: Run Integration Tests
+      run: cmake --build build --target test
