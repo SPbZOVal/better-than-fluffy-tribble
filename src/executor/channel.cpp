@@ -4,7 +4,7 @@
 namespace btft::interpreter::executor {
 
 void Channel::Write(const std::string &buffer) {
-    std::unique_lock mutex_write(mutex);
+    const std::unique_lock mutex_write(mutex);
     if (closed) {
         throw std::runtime_error("Channel is closed, you can't write into it");
     }
@@ -15,7 +15,7 @@ void Channel::Write(const std::string &buffer) {
 std::string Channel::Read() {
     std::unique_lock mutex_read(mutex);
     condVar.wait(mutex_read, [this]() {
-        return closed || readBuffer.str().size() != 0;
+        return closed || !readBuffer.str().empty();
     });
 
     std::string result = std::move(readBuffer.str());
@@ -24,12 +24,13 @@ std::string Channel::Read() {
 }
 
 void Channel::CloseChannel() {
-    std::unique_lock mutex_close(mutex);
+    const std::unique_lock mutex_close(mutex);
     closed = true;
     condVar.notify_all();
 }
 
-bool Channel::IsClosed() const noexcept {
+bool Channel::IsClosed() const {
+    const std::unique_lock mutex_closed(mutex);
     return closed;
 }
 
@@ -40,7 +41,7 @@ std::string InputStdChannel::Read() {
     return result;
 }
 
-bool InputStdChannel::IsClosed() const noexcept {
+bool InputStdChannel::IsClosed() const {
     return std::cin.eof();
 }
 

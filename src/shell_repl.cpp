@@ -7,40 +7,43 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include "../include/executor/executor.h"
-#include "../include/parser/antlr_parser.h"
-#include "../include/parser/preprocessor.h"
 #include "environment.h"
+#include "executor/executor.h"
+#include "parser/antlr_parser.h"
 
 namespace btft {
 
-ShellRepl::ShellRepl()
-    : parser(std::make_unique<parser::AntlrParser>()),
-      preprocessor(std::make_unique<parser::Preprocessor>()) {
+ShellRepl::ShellRepl() : parser(std::make_unique<parser::AntlrParser>()) {
 }
 
-interpreter::ExecutionResult ShellRepl::ProcessLine(std::string_view raw_input
+interpreter::ExecutionResult ShellRepl::ProcessLine(std::string_view input
 ) const {
     using interpreter::ExecutionResult;
     using interpreter::PipelineNode;
 
-    const std::string input = preprocessor->Preprocess(raw_input);
+    auto &env = Environment::GetInstance();
+    env.ClearLocal();
 
     const parser::ParseResult parsed = parser->Parse(input);
     if (!parsed.IsOk()) {
+        env.ClearLocal();
         ExecutionResult res;
         res.exit_code = 1;
         res.error_message = parsed.error_message;
         return res;
     }
 
-    const PipelineNode &pipeline = parsed.pipeline.value();
-
-    if (!pipeline.Empty()) {
-        return interpreter::executor::ExecutePipeline(pipeline.GetCommands());
+    ExecutionResult result{};
+    if (parsed.pipeline.has_value()) {
+        const PipelineNode &pipeline = parsed.pipeline.value();
+        if (!pipeline.Empty()) {
+            result =
+                interpreter::executor::ExecutePipeline(pipeline.GetCommands());
+        }
     }
 
-    return ExecutionResult{};
+    env.ClearLocal();
+    return result;
 }
 
 int ShellRepl::Run() const {
@@ -65,8 +68,8 @@ int ShellRepl::Run() const {
             std::cout << std::flush;
         }
     }
-    std::cout << std::endl;
 
+    std::cout << '\n' << std::flush;
     return execution_result.exit_code;
 }
 

@@ -1,0 +1,2 @@
+MY_VAR=test_value
+printenv MY_VAR

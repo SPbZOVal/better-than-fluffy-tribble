@@ -10,8 +10,12 @@ ExecutionResult CatCommand::Execute(
     std::shared_ptr<IOutputChannel> output_channel
 ) {
     if (args.empty()) {
-        while (!input_channel->IsClosed()) {
-            output_channel->Write(input_channel->Read());
+        while (true) {
+            const std::string chunk = input_channel->Read();
+            if (chunk.empty() && input_channel->IsClosed()) {
+                break;
+            }
+            output_channel->Write(chunk);
         }
         return ExecutionResult{};
     }

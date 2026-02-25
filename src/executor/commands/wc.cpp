@@ -12,14 +12,14 @@ std::tuple<std::size_t, std::size_t, std::size_t> CountStats(
 ) {
     std::size_t lines = 0;
     std::size_t words = 0;
-    std::size_t bytes = content.size();
+    const std::size_t bytes = content.size();
 
     bool in_word = false;
-    for (char c : content) {
+    for (const char c : content) {
         if (c == '\n') {
             lines++;
         }
-        if (std::isspace(static_cast<unsigned char>(c))) {
+        if (std::isspace(static_cast<unsigned char>(c)) != 0) {
             if (in_word) {
                 words++;
                 in_word = false;
@@ -48,8 +48,12 @@ ExecutionResult WcCommand::Execute(
 
     if (args.empty()) {
         std::string content;
-        while (!inputChannel->IsClosed()) {
-            content += inputChannel->Read();
+        while (true) {
+            const std::string chunk = inputChannel->Read();
+            if (chunk.empty() && inputChannel->IsClosed()) {
+                break;
+            }
+            content += chunk;
         }
 
         const auto [lines, words, bytes] = CountStats(content);
@@ -69,7 +73,7 @@ ExecutionResult WcCommand::Execute(
 
         std::stringstream buffer;
         buffer << file.rdbuf();
-        std::string content = buffer.str();
+        const std::string content = buffer.str();
         file.close();
 
         auto [lines, words, bytes] = CountStats(content);

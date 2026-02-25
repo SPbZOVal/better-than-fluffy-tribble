@@ -1,11 +1,10 @@
 #include "executor/commands/echo.h"
-#include <iostream>
 
 namespace btft::interpreter::executor::commands {
 
 ExecutionResult EchoCommand::Execute(
     const std::vector<std::string> &args,
-    std::shared_ptr<IInputChannel> input_channel,
+    std::shared_ptr<IInputChannel> /*input_channel*/,
     std::shared_ptr<IOutputChannel> output_channel
 ) {
     for (std::size_t i = 0; i < args.size(); ++i) {
