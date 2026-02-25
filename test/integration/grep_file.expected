@@ -1,0 +1,26 @@
+>[1;31mMinimal[0m line one
+>[1;31mMinimal[0m
+>[1;31mMini[0mmal line one
+>[1;31mMiniamini[0m pattern test
+>>[1;31mMano[0m text here
+>[1;31mMeno[0mword test
+>>[1;31mmina[0m word boundary test
+>[1;31mMinimal[0m line one
+[1;31mMinimal[0mline one
+[1;31mMinimal[0m extra line after
+>[1;31mMinimal[0m line one
+[1;31mMinimal[0m extra line after
+[1;31mMinimal[0m
+>[1;31mMinimal[0m line one
+[1;31mMinimal[0mline one
+This is a [1;31mMinimal[0m example
+Another [1;31mMinimal[0m line
+[1;31mMinimal[0m extra line after
+Second line after [1;31mMinimal[0m
+>[1;31mMinimal[0m content in second file
+This is a [1;31mMinimal[0m example in file 2
+Another [1;31mMinimal[0m line in file 2
+[1;31mMinimal[0m pattern here too
+Final line with [1;31mMinimal[0m
+[1;31mMinimal[0m line one
+>

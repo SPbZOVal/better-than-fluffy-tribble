@@ -1,0 +1,14 @@
+grep "Minimal" grep_file.input_file_1
+grep "^Minimal$" grep_file.input_file_1
+grep "Mini*" grep_file.input_file_1
+grep "Mini.mini" grep_file.input_file_1
+grep "mano" grep_file.input_file_1
+grep -i "mano" grep_file.input_file_1
+grep "Meno" grep_file.input_file_1
+grep -w "Meno" grep_file.input_file_1
+grep -i -w "Mina" grep_file.input_file_1
+grep -A 2 "^Minimal" grep_file.input_file_1
+grep -A 2 -i -w "^minimal" grep_file.input_file_1
+grep -A 5 "Minimal" grep_file.input_file_1 grep_file.input_file_2
+grep -A 5 "Minimal" grep_file.input_file_2 grep_file.input_file_1
+exit

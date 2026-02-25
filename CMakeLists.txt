@@ -16,11 +16,20 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(Antlr)
 
+include(FetchContent)
+FetchContent_Declare(
+  argparse
+  GIT_REPOSITORY https://github.com/p-ranav/argparse.git
+  GIT_TAG v3.2
+)
+FetchContent_MakeAvailable(argparse)
+
 add_library(btft_obj OBJECT)
 set(BTFT_TARGET btft_obj)
 
 target_include_directories(${BTFT_TARGET} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        ${argparse_SOURCE_DIR}/include
 )
 
 add_subdirectory(src)
@@ -31,6 +40,7 @@ add_executable(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        ${argparse_SOURCE_DIR}/include
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
