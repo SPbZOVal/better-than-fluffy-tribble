@@ -5,11 +5,11 @@
 namespace btft::interpreter::executor::commands {
 
 ExecutionResult PwdCommand::Execute(
-    const std::vector<std::string> &args,
-    std::shared_ptr<IInputChannel> input_channel,
+    const std::vector<std::string> & /*args*/,
+    std::shared_ptr<IInputChannel> /*input_channel*/,
     std::shared_ptr<IOutputChannel> output_channel
 ) {
-    std::filesystem::path cwd = std::filesystem::current_path();
+    const std::filesystem::path cwd = std::filesystem::current_path();
     output_channel->Write(cwd.string() + "\n");
 
     return ExecutionResult{};

@@ -34,9 +34,12 @@ interpreter::ExecutionResult ShellRepl::ProcessLine(std::string_view input
     }
 
     ExecutionResult result{};
-    if (const PipelineNode &pipeline = parsed.pipeline.value();
-        !pipeline.Empty()) {
-        result = interpreter::executor::ExecutePipeline(pipeline.GetCommands());
+    if (parsed.pipeline.has_value()) {
+        const PipelineNode &pipeline = parsed.pipeline.value();
+        if (!pipeline.Empty()) {
+            result =
+                interpreter::executor::ExecutePipeline(pipeline.GetCommands());
+        }
     }
 
     env.ClearLocal();

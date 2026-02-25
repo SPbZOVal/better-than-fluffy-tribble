@@ -36,7 +36,7 @@ std::string DecodeWordToken(const antlr4::Token &token) {
         case ShellLexer::SQ_STRING:
             if (good_quoted('\'')) {
                 return UnescapeQuoted<'\''>(
-                    std::string_view(text).substr(1, text.size() - 2)
+                    std::string_view{text}.substr(1, text.size() - 2)
                 );
             }
             break;
@@ -44,7 +44,7 @@ std::string DecodeWordToken(const antlr4::Token &token) {
         case ShellLexer::DQ_STRING:
             if (good_quoted('"')) {
                 return UnescapeQuoted<'"'>(
-                    std::string_view(text).substr(1, text.size() - 2)
+                    std::string_view{text}.substr(1, text.size() - 2)
                 );
             }
             break;

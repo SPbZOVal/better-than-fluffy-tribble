@@ -42,7 +42,7 @@ bool Environment::HasVar(const std::string &name) const {
 }
 
 std::optional<std::string> Environment::GetVar(const std::string &name) const {
-    if (const auto local_var = GetLocal(name); local_var) {
+    if (auto local_var = GetLocal(name); local_var) {
         return local_var;
     }
     return GetGlobal(name);
@@ -54,15 +54,22 @@ void Environment::ClearLocal() {
 
 std::vector<std::string> Environment::GetEnvironmentArray() const {
     std::vector<std::string> result;
+    result.reserve(global_vars.size() + local_vars.size());
 
     // Add global variables
     for (const auto &[key, value] : global_vars) {
-        result.push_back(key + "=" + value);
+        std::string entry = key;
+        entry += "=";
+        entry += value;
+        result.push_back(std::move(entry));
     }
 
     // Add local variables (they override globals if same key exists)
     for (const auto &[key, value] : local_vars) {
-        result.push_back(key + "=" + value);
+        std::string entry = key;
+        entry += "=";
+        entry += value;
+        result.push_back(std::move(entry));
     }
 
     return result;
