@@ -39,9 +39,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 btft_setup_antlr(${BTFT_TARGET})
 
+# Enable compilation database generation for clang-tidy
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Format target: Apply clang-format to all source files
 add_custom_target(format
-    COMMAND find ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/include -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c' | xargs clang-format-15 -i -style=file
+    COMMAND find ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/include -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c' | xargs clang-format -i -style=file
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Running clang-format on all source files..."
 )
@@ -53,9 +56,9 @@ add_custom_target(format-check
     COMMENT "Checking code formatting..."
 )
 
-# Tidy target: Run clang-tidy on all source files
+# Tidy target: Run clang-tidy on all source files with compilation database
 add_custom_target(tidy
-    COMMAND find ${CMAKE_SOURCE_DIR}/src -name '*.cpp' -o -name '*.c' | xargs -I {} clang-tidy {} || true
+    COMMAND find ${CMAKE_SOURCE_DIR}/src -name '*.cpp' -o -name '*.c' | xargs -I {} clang-tidy -p ${CMAKE_BINARY_DIR} {} || true
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Running clang-tidy on source files..."
 )
