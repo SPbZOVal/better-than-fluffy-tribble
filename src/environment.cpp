@@ -1,4 +1,4 @@
-#include "environment.h"
+#include <environment.h>
 #include <utility>
 
 namespace btft {
@@ -50,5 +50,21 @@ std::optional<std::string> Environment::GetVar(const std::string &name) const {
 
 void Environment::ClearLocal() {
     local_vars.clear();
+}
+
+std::vector<std::string> Environment::GetEnvironmentArray() const {
+    std::vector<std::string> result;
+
+    // Add global variables
+    for (const auto &[key, value] : global_vars) {
+        result.push_back(key + "=" + value);
+    }
+
+    // Add local variables (they override globals if same key exists)
+    for (const auto &[key, value] : local_vars) {
+        result.push_back(key + "=" + value);
+    }
+
+    return result;
 }
 }  // namespace btft
