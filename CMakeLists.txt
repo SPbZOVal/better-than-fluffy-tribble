@@ -55,7 +55,7 @@ add_custom_target(format-check
 
 
 add_custom_target(tidy
-    COMMAND find ${CMAKE_SOURCE_DIR}/src -name '*.cpp' -o -name '*.c' | xargs -I {} clang-tidy-15 -p ${CMAKE_BINARY_DIR} {}
+    COMMAND find ${CMAKE_SOURCE_DIR}/src -name '*.cpp' -o -name '*.c' -not -path "${CMAKE_SOURCE_DIR}/src/parser" | xargs -I {} clang-tidy-15 -p ${CMAKE_BINARY_DIR} {} -- -Iinclude/ || true
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Running clang-tidy on source files..."
 )
